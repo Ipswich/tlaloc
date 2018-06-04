@@ -1,16 +1,31 @@
 mixin headernav
-  nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow
-    a.navbar-brand.col-sm-3.col-md-2.mr-0(href="#") #{title}
-  div.fluid-container
-    div.row
-      nav.col-auto.d-none.d-block.bg-light.sidebar
-        div.sidebar-sticky
-          ul.nav.flex-column.text-center
-            li.nav-item
-              a.nav-link(href="#") #{Link1}
-            li.nav-item
-              a.nav-link(href="#") #{Link2}
-            li.nav-item
-              a.nav-link(href="#") #{Link3}
-            li.nav-item
-              a.nav-link(href="#") #{Link4}
+    nav.navbar.navbar-expand-md.bg-dark.navbar-dark
+      a.navbar-brand(href="#") #{title}
+      button.navbar-toggler(type="button" data-toggle="collapse" data-target="#collapsibleNavbar")
+        span.navbar-toggler-icon
+      div.collapse.navbar-collapse(id="collapsibleNavbar")
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(href="#") #{Link1}
+          li.nav-item
+            a.nav-link(href="#") #{Link2}
+          li.nav-item
+            a.nav-link(href="#") #{Link3}
+          li.nav-item
+            a.nav-link(href="#") #{Link4}
+    //- div
+    //-   nav.navbar.navbar-dark.bg-dark.flex-md-nowrap.p-0
+    //-     a.navbar-brand.col-auto.mr-0(href="#") #{title}
+    //- div.container-fluid
+    //-   div.row
+    //-     nav.col-auto.d-none.d-block.bg-light.sidebar
+    //-       div.sidebar-sticky
+    //-         ul.nav.flex-column.text-center
+    //-           li.nav-item
+    //-             a.nav-link(href="#") #{Link1}
+    //-           li.nav-item
+    //-             a.nav-link(href="#") #{Link2}
+    //-           li.nav-item
+    //-             a.nav-link(href="#") #{Link3}
+    //-           li.nav-item
+    //-             a.nav-link(href="#") #{Link4}
