@@ -7,12 +7,16 @@ mixin headernav
         ul.navbar-nav
           li.nav-item
             a.nav-link(href="#") #{Link1}
-          li.nav-item
-            a.nav-link(href="#") #{Link2}
+          li.nav-item.dropdown
+            a.nav-link.dropdown-toggle(href="#" data-toggle="dropdown") #{Link2}
+            div.dropdown-menu
+              a.dropdown-item(href="#") #{Link2Sublink1}
           li.nav-item
             a.nav-link(href="#") #{Link3}
           li.nav-item
             a.nav-link(href="#") #{Link4}
+            
+            
     //- div
     //-   nav.navbar.navbar-dark.bg-dark.flex-md-nowrap.p-0
     //-     a.navbar-brand.col-auto.mr-0(href="#") #{title}
