@@ -3,16 +3,29 @@ html
   head
     title= title
     meta(charset="utf-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     meta(name="description" content="Raspberry Pi Sprinkler System")
     meta(name="author" content="Benjamin Steele")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    //- link(rel='stylesheet', href='stylesheets/bootstrap.min.css.map')
     link(rel='stylesheet', href='stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='stylesheets/jquery.mCustomScrollbar.min.css')
+    link(rel='stylesheet', href='stylesheets/style.css')
   body
-    include ./headernav.pug
-    +headernav(title, Link1, Link2, Link3, Link4)
-    block content
-    include ./footer.pug
+    include ./sidebar.pug
+    div.wrapper
+      +sidebar(sidebarTitle, sidebarHeading, link1, link1Sublink1, link1Sublink2, link1Sublink3, link2, link3Sublink1, link3Sublink2, link3Sublink3, link4, link5)      
+      div#content
+        nav.navbar.navbar-expand-lg.navbar-light.bg-light
+          div.container-fluid
+            button#sidebarCollapse.btn.btn-info(type="button")
+              i.fas.fa-align-left
+              span Sidebar Toggle  
+        block content
+        include ./footer.pug
     script(src='javascripts/jquery.slim.min.js')
     script(src='javascripts/popper.min.js')
     script(src='javascripts/bootstrap.min.js')
     script(src="javascripts/feather.min.js")
+    script(src='javascripts/sidebarJQuery.js')
+    script(src='javascripts/jquery.mCustomScrollbar.concat.min.js')

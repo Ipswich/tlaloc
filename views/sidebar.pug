@@ -1,13 +1,30 @@
-div.fluid-container
-  div.row
-    nav.col-auto.d-none.d-block.bg-light.sidebar
-      div.sidebar-sticky
-        ul.nav.flex-column.text-center
-          li.nav-item
-            a.nav-link(href="#") Overview
-          li.nav-item
-            a.nav-link(href="#") Link 2
-          li.nav-item
-            a.nav-link(href="#") Link 3
-          li.nav-item
-            a.nav-link(href="#") Link 4
+mixin sidebar
+  nav#sidebar
+    div.sidebar-header
+      h3 #{sidebarTitle}
+    ul.list-unstyled.components
+      p #{sidebarHeading}
+      li.active
+        a.dropdown-toggle(href="#link1Submenu" data-toggle="collapse" aria-expanded="false") #{link1}
+        ul#link1Submenu.collapse.list-unstyled
+          li
+            a(href="#") #{link1Sublink1}
+          li
+            a(href="#") #{link1Sublink2}
+          li
+            a(href="#") #{link1Sublink3}
+      li
+        a(href="#") #{link2}
+      li
+        a.dropdown-toggle(href="#link3Submenu" data-toggle="collapse" aria-expanded="false") #{link3}
+        ul#link3Submenu.collapse.list-unstyled
+          li
+            a(href="#") #{link3Sublink1}
+          li
+            a(href="#") #{link3Sublink2}
+          li
+            a(href="#") #{link3Sublink3}
+      li
+        a(href="#") #{link4}
+      li
+        a(href="#") #{link5}    
