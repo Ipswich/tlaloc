@@ -17,17 +17,14 @@ var router = express.Router();
 const content = {
   sidebarTitle: "Tlaloc",
   sidebarHeading: "Sprinkler Controls",
-  link1: "Sprinkler Set 1",
-  link1Sublink1: "Sprinkler 1",
-  link1Sublink2: "Sprinkler 2",
-  link1Sublink3: "Sprinkler 3",
-  link2: "Existing Rules",
-  link3: "Sprinkler Set 2",
-  link3Sublink1: "Sprinkler 4",
-  link3Sublink2: "Sprinkler 5",
-  link3Sublink3: "Sprinkler 5",
+  link1: "Overview",
+  link2: "Sprinklers",
+  link2Sublink1: "Sprinkler 1",
+  link2Sublink2: "Sprinkler 2",
+  link2Sublink3: "Sprinkler 3",
+  link2Sublink4: "Sprinkler 4",
+  link3: "Existing Rules",
   link4: "Create Rule",
-  link5: "About"
 }
 
 router.get('/', function(req, res, next) {

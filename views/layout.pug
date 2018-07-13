@@ -11,6 +11,8 @@ html
     link(rel='stylesheet', href='stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='stylesheets/jquery.mCustomScrollbar.min.css')
     link(rel='stylesheet', href='stylesheets/style.css')
+    script(src='javascripts/fontawesome.js')
+    script(src='javascripts/solid.js')
   body
     include ./sidebar.pug
     div.wrapper
@@ -19,8 +21,7 @@ html
         nav.navbar.navbar-expand-lg.navbar-light.bg-light
           div.container-fluid
             button#sidebarCollapse.btn.btn-info(type="button")
-              i.fas.fa-align-left
-              span Sidebar Toggle  
+              i.fas.fa-align-left 
         block content
         include ./footer.pug
     script(src='javascripts/jquery.slim.min.js')
