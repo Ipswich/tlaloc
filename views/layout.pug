@@ -7,7 +7,6 @@ html
     meta(name="description" content="Raspberry Pi Sprinkler System")
     meta(name="author" content="Benjamin Steele")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
-    //- link(rel='stylesheet', href='stylesheets/bootstrap.min.css.map')
     link(rel='stylesheet', href='stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='stylesheets/jquery.mCustomScrollbar.min.css')
     link(rel='stylesheet', href='stylesheets/style.css')
@@ -15,13 +14,11 @@ html
     script(src='javascripts/solid.js')
   body
     include ./sidebar.pug
+    include ./navbar.pug
     div.wrapper
       +sidebar(sidebarTitle, sidebarHeading, link1, link1Sublink1, link1Sublink2, link1Sublink3, link2, link3Sublink1, link3Sublink2, link3Sublink3, link4, link5)      
       div#content
-        nav.navbar.navbar-expand-lg.navbar-light.bg-light
-          div.container-fluid
-            button#sidebarCollapse.btn.btn-info(type="button")
-              i.fas.fa-align-left 
+        +navbar
         block content
         include ./footer.pug
     script(src='javascripts/jquery.slim.min.js')

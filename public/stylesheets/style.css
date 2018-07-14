@@ -1,17 +1,22 @@
-/*
-    DEMO STYLE
-*/
+:root{
+  --website-bg-darker: #0D0D0D;
+  --website-bg-dark: #313131;
+  --website-bg-light: #403014;
+  --website-text-dark: #8C6723;
+  --website-text-light: #D9A036;
+  --website-highlight: #F2E750;
+}
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 body {
     font-family: 'Poppins', sans-serif;
-    background: #fafafa;
+    background: var(--website-bg-dark);
 }
 
 p {
     font-family: 'Poppins', sans-serif;
     font-size: 1.1em;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.7em;
     color: #999;
 }
@@ -62,8 +67,8 @@ a:focus {
     left: 0;
     height: 100vh;
     z-index: 999;
-    background: #7386D5;
-    color: #fff;
+    background: var(--website-bg-darker);
+    color:  var(--website-text-light);
     transition: all 0.3s;
 }
 
@@ -73,17 +78,15 @@ a:focus {
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #6d7fcc;
+    background: var(--website-bg-darker);
 }
 
-#sidebar ul.components {
-    padding: 20px 0;
-    border-bottom: 1px solid #47748b;
-}
-
-#sidebar ul p {
-    color: #fff;
+#sidebar p {
+    color: var(--website-text-light);
     padding: 10px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--website-highlight);
+    border-bottom-style: solid;
 }
 
 #sidebar ul li a {
@@ -93,14 +96,26 @@ a:focus {
 }
 
 #sidebar ul li a:hover {
-    color: #7386D5;
-    background: #fff;
+  padding: 15px;
+    color: var(--website-highlight);
+    background: var(--website-bg-light);
 }
 
 #sidebar ul li.active>a,
 a[aria-expanded="true"] {
-    color: #fff;
-    background: #6d7fcc;
+    color: var(--website-highlight);
+    background: var(--website-bg-light);
+}
+
+#sidebar ul ul li a:hover {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: var(--website-bg-darker);
+}
+
+#sidebarCollapse{
+  background-color: var(--website-highlight);
+  color: var(--website-bg-darker)
 }
 
 a[data-toggle="collapse"] {
@@ -118,7 +133,7 @@ a[data-toggle="collapse"] {
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-    background: #6d7fcc;
+    background: var(--website-bg-light);
 }
 
 ul.CTAs {
@@ -140,7 +155,7 @@ a.download {
 
 a.article,
 a.article:hover {
-    background: #6d7fcc !important;
+    background: var(--website-bg-darker) !important;
     color: #fff !important;
 }
 

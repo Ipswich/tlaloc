@@ -1,12 +1,13 @@
 mixin sidebar
   nav#sidebar
     div.sidebar-header
-      h3 #{sidebarTitle}
-    ul.list-unstyled.components
+      h1 #{sidebarTitle}
+      br
       p #{sidebarHeading}
+    ul.list-unstyled.components
       li
         a(href="#") #{link1}
-      li.active
+      li
         a.dropdown-toggle(href="#link2Submenu" data-toggle="collapse" aria-expanded="false") #{link2}
         ul#link2Submenu.collapse.list-unstyled
           li
@@ -20,4 +21,4 @@ mixin sidebar
       li
         a(href="#") #{link3}
       li
-        a(href="#") #{link4}   
+        a(href="#") #{link4}        
