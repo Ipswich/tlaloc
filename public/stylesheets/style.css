@@ -7,18 +7,20 @@
   --website-highlight: #F2E750;
 }
 
-@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+@import "https://fonts.googleapis.com/css?family=Montserrat:300,400";
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--website-text-light);
     background: var(--website-bg-dark);
 }
 
 p {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 1.1em;
     font-weight: 400;
     line-height: 1.7em;
     color: #999;
+    text-align: center
 }
 
 a,
@@ -30,25 +32,17 @@ a:focus {
 }
 
 .navbar {
-    padding: 15px 10px;
-    background: #fff;
+    padding: 10px 10px;
+    background: var(--website-bg-darker);
     border: none;
     border-radius: 0;
     margin-bottom: 40px;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-btn {
     box-shadow: none;
     outline: none !important;
     border: none;
-}
-
-.line {
-    width: 100%;
-    height: 1px;
-    border-bottom: 1px dashed #ddd;
-    margin: 40px 0;
 }
 
 /* ---------------------------------------------------
@@ -58,6 +52,10 @@ a:focus {
 .wrapper {
     display: flex;
     width: 100%;
+}
+
+#navcontainer{
+  text-align: left;
 }
 
 #sidebar {
@@ -113,9 +111,35 @@ a[aria-expanded="true"] {
     background: var(--website-bg-darker);
 }
 
-#sidebarCollapse{
+#sidebarCollapse {
   background-color: var(--website-highlight);
-  color: var(--website-bg-darker)
+  color: var(--website-bg-darker);
+}
+
+#weather, th, td {
+  padding: 10px;
+}
+
+#weather td:hover {
+  color: var(--website-highlight);
+  transition: all 1s;
+  -webkit-transition: all 1s;
+}
+
+#weatherbutton {
+  background-color: var(--website-text-light);
+  color: var(--website-bg-darker);
+  float: left;
+  margin-right: 5px;
+}
+
+#weatherbutton.dropdown-toggle::after {
+  display: none;
+}
+
+#weatherdropdown {
+    background-color: var(--website-bg-light);
+    color: var(--website-text-light);
 }
 
 a[data-toggle="collapse"] {
@@ -157,6 +181,10 @@ a.article,
 a.article:hover {
     background: var(--website-bg-darker) !important;
     color: #fff !important;
+}
+
+a.link{
+  color: var(--website-text-light)
 }
 
 /* ---------------------------------------------------

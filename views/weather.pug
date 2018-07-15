@@ -1,2 +1,28 @@
 mixin weather
-  
+  div#weathercontainer.container-fluid
+    h6 As of #{weatherdata.current.observationtime}, it is #{weatherdata.current.temperature}&#176;#{weatherdata.location.degreetype} in #{weatherdata.location.name} with a humidity of #{weatherdata.current.humidity}% and a wind heading of #{weatherdata.current.winddisplay}.
+    br      
+    table#weather
+      tr
+        th #[u Date]
+        th #[u Forecast]
+        th #[u High]
+        th #[u Low]
+        th #[u Precipitation]
+      each val in weatherdata.forecast
+        tr
+          td= val.day
+          td= val.skytextday
+          td= val.high + "\xB0" + weatherdata.location.degreetype
+          td= val.low + "\xB0" + weatherdata.location.degreetype
+          if (val.precip == "")
+            td= val.precip + "0%"
+          else
+            td= val.precip + "%"
+        
+      //- h6= "The forecast for " + val.day + ", " + val.date + ", is " + val.skytextday.toLowerCase() + " with a high of " + val.high + "\xB0 " + weatherdata.location.degreetype + " and a low of " + val.low + "\xB0 " + weatherdata.location.degreetype + "."
+      //- h6= "There is a " + val.precip + "% chance of rain."
+      //- br
+        
+        
+    

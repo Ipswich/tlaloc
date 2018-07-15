@@ -1,7 +1,13 @@
 mixin navbar
-  nav.navbar.navbar-expand-lg.navbar-light.bg-light
-    div.container-fluid
-      button#sidebarCollapse.btn(type="button")
-        i.fas.fa-align-left
-      h6 #{time} - #{weatherdata.location.name} 
+  nav.navbar.navbar-expand-lg
+    div#navcontainer.container-fluid
+      div
+        button#sidebarCollapse.btn(type="button")
+          i.fas.fa-align-left
+        button#weatherbutton.btn.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+          | Weather
+        div#weatherdropdown.dropdown-menu(aria-labelledby="weatherbutton")
+          include ./weather.pug
+          +weather(weatherdata)
+      h6#currenttime #{time} - #{weatherdata.location.name} 
     

@@ -18,7 +18,7 @@ html
     div.wrapper
       +sidebar(sidebarTitle, sidebarHeading, link1, link1Sublink1, link1Sublink2, link1Sublink3, link2, link3Sublink1, link3Sublink2, link3Sublink3, link4, link5)      
       div#content
-        +navbar
+        +navbar(weatherdata)
         block content
         include ./footer.pug
     script(src='javascripts/jquery.slim.min.js')

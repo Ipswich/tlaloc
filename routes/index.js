@@ -1,8 +1,7 @@
 var express = require('express');
 var weather = require('weather-js');
 var router = express.Router();
-
-
+var getweather = require('getweather');
 
 router.get('/', function(req, res, next) {
 
