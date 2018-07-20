@@ -8,6 +8,9 @@ mixin navbar
           | Weather
         div#weatherdropdown.dropdown-menu(aria-labelledby="weatherbutton")
           include ./weather.pug
-          +weather(weatherdata)
-      h6#currenttime #{time} - #{weatherdata.location.name} 
+          if error
+            +weather(error)
+          else
+            +weather(weatherdata)
+      h6#currenttime #{time} - #{location} 
     
