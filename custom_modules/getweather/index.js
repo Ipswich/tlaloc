@@ -34,7 +34,7 @@ getWeather = function(callback){
       time: date.toDateString() + ", " + formattedTime,
       error: "err"
       }
-      console.log('--NO INTERNET CONNECTION--')
+      // console.log('--NO INTERNET CONNECTION--')
       callback(null, content);
     }
     else{
@@ -54,7 +54,7 @@ getWeather = function(callback){
       time: date.toDateString() + ", " + formattedTime,
       weatherdata: weatherdata,
       }
-      console.log('--CONNECTION SUCCESSFUL--')
+      // console.log('--CONNECTION SUCCESSFUL--')
       callback(null, content);
     }
   });

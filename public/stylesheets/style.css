@@ -184,8 +184,31 @@ a.article:hover {
 }
 
 a.link{
-  color: var(--website-text-light)
+  color: var(--website-highlight)
 }
+
+
+/* ---------------------------------------------------
+    CREATERULE STYLE
+----------------------------------------------------- */
+#createrulebutton {
+    background-color: var(--website-text-light);
+    color: var(--website-bg-darker);
+}
+
+#createruleinformation {
+    background-color: var(--website-bg-light);
+    color: var(--website-text-light);
+}
+
+#createruleinformation p{
+    color: var(--website-text-light);
+}
+
+#createruletitle{
+  text-align: center;
+}
+
 
 /* ---------------------------------------------------
     CONTENT STYLE
