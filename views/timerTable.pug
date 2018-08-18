@@ -1,0 +1,18 @@
+mixin timerTable
+  table(style="margin-left:auto; margin-right:auto")
+    tr
+      th(style="text-align: center") Delete
+      th(style="text-align: center") Start Time
+      th(style="text-align: center") Stop Time
+      th(style="text-align: center") Fertilize      
+    each val, index in sprinkler.getSchedule()
+      - var checkboxString = 'input(type="checkbox" value="true" name="timer_'+ index + '")'
+      tr
+        td(style="text-align: center") #[input(type="checkbox" name="Timer_" + index value="true")]
+        td(style="text-align: center")= val.startTime
+        td(style="text-align: center")= val.stopTime
+        if (val.fertilize == true)
+          td(style="text-align: center")= "Yes"
+        else
+          td(style="text-align: center")= "No"
+    

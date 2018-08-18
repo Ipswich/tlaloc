@@ -1,0 +1,156 @@
+extends layout
+include ./timerTable.pug
+
+block content
+  div.container
+    div.row
+      div.col-sm(style="text-align: center")
+        h1(style="text-align: center") New Rule
+        p 
+          button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#NRInstructions" role="button" area-expanded="false" aria-controls="NRInstructions") Instructions
+        div#NRInstructions.collapse
+          div.card.card-body.sprinklerinformation
+            p.sprinklerinformation To create a new rule, select values from the dropdown menus
+              |. The '*' character indicates ALL values, and the '*/#' 
+              | indicates every value divisible by #. The day of week 
+              | begins on Sunday (0 = Sunday). Click submit when you are finished.
+          br
+        //- START TIME SECTION
+        form(action="#" method="post")
+          p !{content.sprinkler.scheduledata}
+          //- input(type="hidden" name="sprinklerName" value=content.sprinklerdata.name)
+          div.form-row
+            h5 #[u Start Time:]
+          div.form-row
+            div.form-group.col-sm
+              label(for="Starthour") Hour: 
+              select#Starthour.form-control(name = "Starthour")
+                - var count = 0
+                while count <= 23
+                  option=count++
+                option *
+            div.form-group.col-sm
+              label(for="Startminute") Minute:
+              select#Startminute.form-control(name = "Startminute")
+                option 0
+                - count = 5;
+                while count <= 55
+                  if count % 5 == 0
+                    option=count
+                  - count++
+                - count = 2
+                - var countString = '*/'
+                option *
+                while count < 30
+                  if 60 % count == 0 
+                    option=countString + count
+                  - count ++
+            div.form-group.col-sm
+              label(for="StartdayOfMonth") Date:
+              select#StartdayOfMonth.form-control(name = "StartdayOfMonth")
+                option *
+                - count = 1
+                while count <= 31
+                  option=count++
+            div.form-group.col-sm
+              label(for="Startmonth") Month:
+              select#Startmonth.form-control(name = "Startmonth")
+                option *
+                - count = 1
+                while count <= 12
+                  option= count++
+            div.form-group.col-sm
+              label(for="SdayOfWeek") Weekday:
+              select#StartdayOfWeek.form-control(name = "StartdayOfWeek")
+                option *
+                - count = 0
+                while count <= 6
+                  option= count++
+          //- STOP TIME SECTION
+          div.form-row
+            h5 #[u Stop Time:]
+          div.form-row
+            div.form-group.col-sm
+              label(for="Stophour") Hour: 
+              select#Stophour.form-control(name = "Stophour")
+                - var count = 0
+                while count <= 23
+                  option=count++
+                option *
+            div.form-group.col-sm
+              label(for="Stopminute") Minute:
+              select#Stopminute.form-control(name = "Stopminute")
+                option 0
+                - count = 5;
+                while count <= 55
+                  if count % 5 == 0
+                    option=count
+                  - count++
+                - count = 2
+                - var countString = '*/'
+                option *
+                while count < 30
+                  if 60 % count == 0 
+                    option=countString + count
+                  - count ++
+            div.form-group.col-sm
+              label(for="StopdayOfMonth") Date:
+              select#StopdayOfMonth.form-control(name = "StopdayOfMonth")
+                option *
+                - count = 1
+                while count <= 31
+                  option=count++
+            div.form-group.col-sm
+              label(for="Stopmonth") Month:
+              select#Stopmonth.form-control(name = "Stopmonth")
+                option *
+                - count = 1
+                while count <= 12
+                  option= count++
+            div.form-group.col-sm
+              label(for="StopdayOfWeek") Weekday:
+              select#StopdayOfWeek.form-control(name = "StopdayOfWeek")
+                option *
+                - count = 0
+                while count <= 6
+                  option= count++
+          //- Fertilize Checkbox
+          div.form-row
+            div.form-group.col-sm
+              div.form-check.form-check-inline
+                input#fertilizeCheckbox(name="fertilizeCheckbox" type="checkbox").form-check-input
+                label(for="fertilizeCheckbox").form-check-label Fertilize
+          //- Submit Button
+          div.form-row
+            div.form-group.col-sm(style="text-align: center")
+              input.sprinklerbutton.button(type='submit' value="Submit").btn
+            
+      div.col-sm
+        h1(style="text-align: center") Remove Rule
+        p 
+          button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#RRInstructions" role="button" area-expanded="false" aria-controls="NRInstructions") Instructions
+        div#RRInstructions.collapse
+          div.card.card-body.sprinklerinformation
+            p.sprinklerinformation To remove existing rules, tick the desired checkboxes 
+              | and click submit. Rules follow cron syntax:
+              | #[br] *    *    *    *    *    *
+              | #[br] ┬    ┬    ┬    ┬    ┬    ┬
+              | #[br] │    │    │    │    │    │
+              | #[br] │    │    │    │    │    └ day of week (0 - 7) (0 or 7 is Sun)
+              | #[br] │    │    │    │    └───── month (1 - 12)
+              | #[br] │    │    │    └────────── day of month (1 - 31)
+              | #[br] │    │    └─────────────── hour (0 - 23)
+              | #[br] │    └──────────────────── minute (0 - 59)
+              | #[br] └───────────────────────── second (0 - 59)
+          br
+        form(action="#" method="post")
+          div.form-row
+            h5 #[u Existing Rules:]
+          div.form-row
+            div.form-group.col-sm
+              +timerTable(content)
+          div.form-row
+            div.form-group.col-sm(style="text-align: center")
+              input.sprinklerbutton.button.btn(type='submit' value="Submit")
+            
+            

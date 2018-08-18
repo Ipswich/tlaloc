@@ -3,16 +3,30 @@ const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('db.json');
 const db = low(adapter);
+const config = require('../config')
 
 var allTimerObjects = [];
+var fertilizePin = config.fertilizePin;
 
-Sprinkler = {
+var Sprinkler = {
 
+  //Initializes JSON Database if it does not exist.
   initializeDB: function(){
-    db.defaults({}).write();
+    if(db.getState() == 'undefined'){
+      db.defaults({}).write();
+    }
+    else {
+      console.log("DB already exists, skipping DB creation. . .")
+    }
   },
 
-  CreateSprinkler: function(name, gpioPin, fertilizePin){
+  //Parses input into string for timers
+  inputParser: (minute, hour, dayOfMonth, month, dayOfWeek) => {
+    let outputString = ("* " + minute + " " + hour + " " + dayOfMonth + " * " + dayOfWeek)
+    console.log(outputString);
+  },
+
+  CreateSprinkler: function(name, gpioPin){
     this.name = name;
     this.gpioPin = gpioPin;
     this.fertilizePin = fertilizePin
@@ -47,9 +61,9 @@ Sprinkler = {
     }
 
     //Adds a timer to the database
-    this.addTimer = function(startString, stopString){
+    this.addTimer = function(startString, stopString, fertilize){
       console.log("ADDING ENTRY. . .");
-      db.get(this.name).push({startTime: startString, stopTime: stopString}).write();
+      db.get(this.name).push({startTime: startString, stopTime: stopString, fertilizeState: fertilize}).write();
     }
 
     //Removes a timer from the database by index
@@ -101,7 +115,11 @@ Sprinkler = {
       // TODO: SET RASPBERRY PI PIN TO LOW
       console.log("OFF");
     }
-  }
+  },
+
+
+  //CREATE SPRINKLER OBJECTS
+  // sprinkler1: CreateSprinkler('sprinkler1', 7)
 }
 
 module.exports = Sprinkler;

@@ -1,4 +1,20 @@
 {
-  "sprinkler1": [],
+  "sprinkler1": [
+    {
+      "startTime": "* * * * * *",
+      "stopTime": "* * * * * *",
+      "fertilizeState": true
+    },
+    {
+      "startTime": "* * * * * *",
+      "stopTime": "* * * * * *",
+      "fertilizeState": true
+    },
+    {
+      "startTime": "* * * * * *",
+      "stopTime": "* * * * * *",
+      "fertilizeState": true
+    }
+  ],
   "sprinkler2": []
 }

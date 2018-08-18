@@ -1,4 +1,5 @@
 module.exports = {
   location: "Salem, OR",
-  degreeType: "F"
+  degreeType: "F",
+  fertilizePin: 21
 }

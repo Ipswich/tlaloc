@@ -189,16 +189,17 @@ a.link{
 
 
 /* ---------------------------------------------------
-    CREATERULE STYLE
+    SPRINKLER VIEW STYLE
 ----------------------------------------------------- */
-#createrulebutton {
+.sprinklerbutton {
     background-color: var(--website-text-light);
     color: var(--website-bg-darker);
 }
 
-#createruleinformation {
+.sprinklerinformation {
     background-color: var(--website-bg-light);
     color: var(--website-text-light);
+    text-align: left;
 }
 
 #createruleinformation p{
