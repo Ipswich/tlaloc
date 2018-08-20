@@ -6,13 +6,13 @@ var sprinkler = require('../custom_modules/sprinkler');
 
 var urlencodedParser = body.urlencoded({ extended: false });
 
-/* GET sprinkler1. */
+/* GET sprinkler3. */
 router.get('/', function(req, res, next) {
-  // scheduledata = req.app.get('sprinkler1');
+  // scheduledata = req.app.get('sprinkler3');
   getweather.getWeather(function(err, content){
     if (err) console.log(err);
     else {
-      content.sprinkler = req.app.get('sprinkler1')
+      content.sprinkler = req.app.get('sprinkler3')
       console.log(content)
       res.render('./sprinkler', content);
     }
@@ -23,7 +23,7 @@ router.post('/', urlencodedParser, function(req, res, next){
   getweather.getWeather(function(err, content){
     if (err) console.log(err);
     else {
-      content.sprinkler = req.app.get('sprinkler1');
+      content.sprinkler = req.app.get('sprinkler3');
       if (req.body.formName == "newrule"){
         var startString = sprinkler.inputParser(req.body.Startminute, req.body.Starthour, req.body.StartdayOfMonth, req.body.Startmonth, req.body.StartdayOfWeek);
         var stopString = sprinkler.inputParser(req.body.Stopminute, req.body.Stophour, req.body.StopdayOfMonth, req.body.Stopmonth, req.body.StopdayOfWeek);

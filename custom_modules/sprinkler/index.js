@@ -4,6 +4,8 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('db.json');
 const db = low(adapter);
 const config = require('../config')
+const Gpio = require('onoff').Gpio
+
 
 var allTimerObjects = [];
 var fertilizePin = config.fertilizePin;
@@ -22,8 +24,8 @@ var Sprinkler = {
 
   //Parses input into string for timers
   inputParser: (minute, hour, dayOfMonth, month, dayOfWeek) => {
-    let outputString = ("* " + minute + " " + hour + " " + dayOfMonth + " * " + dayOfWeek)
-    console.log(outputString);
+    let outputString = ("0 " + minute + " " + hour + " " + dayOfMonth + " * " + dayOfWeek)
+    return outputString;
   },
 
   CreateSprinkler: function(name, gpioPin){
@@ -31,7 +33,12 @@ var Sprinkler = {
     this.gpioPin = gpioPin;
     this.fertilizePin = fertilizePin
     this.timerObjects = [];
-    // TODO: ASSIGN GPIO PINS TO RASPBERRY PI
+    var pin;
+    if (Gpio.accessible) {
+      pin = new Gpio(this.gpioPin, 'out')
+    } else {
+        console.log('Virtual sprinkler now uses value: ' + this.gpioPin);
+    }
 
     if(!db.has(this.name).value())
       db.set(name, []).write();
@@ -82,7 +89,8 @@ var Sprinkler = {
     ////////////////////////
     //SCHEDULING FUNCTIONS//
     ////////////////////////
-    //Activate all timers and add returned objects to timerObjects array
+    //Activate all timers and add returned objects to timerObjects array.
+    //Commits entries from DB into the app, filling the timer array
     this.commitAllTimers = function(){
       let list = this.getSchedule();
       let length = list.length;
@@ -106,20 +114,30 @@ var Sprinkler = {
     ////////////////////
     //Triggered on startTime on raspberry pi
     this.on = function(){
-      // TODO: SET RASPBERRY PI PIN TO HIGH
-      console.log("ON")
+      if(Gpio.accessible && pin != undefined) {
+        pin.writeSync(1);
+        process.on('SIGINT', () => {
+          pin.unexport();
+        });
+      }
+      else {
+        console.log("ON")
+      }
     }
 
     //Triggered on stopTime on raspberry pi
     this.off = function(){
-      // TODO: SET RASPBERRY PI PIN TO LOW
-      console.log("OFF");
+      if(Gpio.accessible && pin != undefined) {
+        pin.writeSync(0);
+        process.on('SIGINT', () => {
+          pin.unexport();
+        });
+      }
+      else {
+        console.log("OFF")
+      }
     }
-  },
-
-
-  //CREATE SPRINKLER OBJECTS
-  // sprinkler1: CreateSprinkler('sprinkler1', 7)
+  }
 }
 
 module.exports = Sprinkler;

@@ -16,9 +16,9 @@ block content
               | begins on Sunday (0 = Sunday). Click submit when you are finished.
           br
         //- START TIME SECTION
-        form(action="#" method="post")
-          p !{content.sprinkler.scheduledata}
-          //- input(type="hidden" name="sprinklerName" value=content.sprinklerdata.name)
+        - var link = "./" + sprinkler.name
+        form(action=link method="post")
+          input(type="hidden" name="formName" value="newrule")
           div.form-row
             h5 #[u Start Time:]
           div.form-row
@@ -143,7 +143,8 @@ block content
               | #[br] │    └──────────────────── minute (0 - 59)
               | #[br] └───────────────────────── second (0 - 59)
           br
-        form(action="#" method="post")
+        form(action=link method="post")
+          input(type="hidden" name="formName" value="removerule")          
           div.form-row
             h5 #[u Existing Rules:]
           div.form-row

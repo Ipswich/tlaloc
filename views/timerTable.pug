@@ -11,7 +11,7 @@ mixin timerTable
         td(style="text-align: center") #[input(type="checkbox" name="Timer_" + index value="true")]
         td(style="text-align: center")= val.startTime
         td(style="text-align: center")= val.stopTime
-        if (val.fertilize == true)
+        if (val.fertilizeState == true)
           td(style="text-align: center")= "Yes"
         else
           td(style="text-align: center")= "No"
