@@ -1,18 +1,13 @@
 {
-  "sprinkler1": [
-    {
-      "startTime": "* * * * * *",
-      "stopTime": "0 0 0 * * *",
-      "fertilizeState": false
-    }
-  ],
+  "sprinkler1": [],
+  "sprinkler1CoolTemp": {
+    "coolTemp": "79",
+    "state": true
+  },
   "sprinkler2": [],
+  "sprinkler2CoolTemp": {},
   "sprinkler3": [],
-  "sprinkler4": [
-    {
-      "startTime": "0 0 0 * * *",
-      "stopTime": "0 0 0 * * *",
-      "fertilizeState": false
-    }
-  ]
+  "sprinkler3CoolTemp": {},
+  "sprinkler4": [],
+  "sprinkler4CoolTemp": {}
 }

@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var Gpio = require('onoff').Gpio
 
 //Custom Modules
 var getweather = require('./custom_modules/getweather');
@@ -18,14 +19,20 @@ var sprinkler3Router = require('./routes/sprinkler3');
 var sprinkler4Router = require('./routes/sprinkler4');
 
 var app = express();
-
-//Sprinkler setup
+//Fertilize setup
+let fertilizePin;
 sprinkler.initializeDB();
-var sprinkler1 = new sprinkler.CreateSprinkler('sprinkler1', config.sprinkler1Pin);
-var sprinkler2 = new sprinkler.CreateSprinkler('sprinkler2', config.sprinkler2Pin);
-var sprinkler3 = new sprinkler.CreateSprinkler('sprinkler3', config.sprinkler3Pin);
-var sprinkler4 = new sprinkler.CreateSprinkler('sprinkler4', config.sprinkler4Pin);
-// sprinkler1.commitAllTimers();
+if (Gpio.accessible) {
+  fertilizePin = new Gpio(config.fertilizePin, 'out')
+} else {
+    console.log('Virtual fertilizer now uses value: ' + config.fertilizePin);
+}
+//Sprinkler setup
+var sprinkler1 = new sprinkler.CreateSprinkler('sprinkler1', config.sprinkler1Pin, fertilizePin);
+var sprinkler2 = new sprinkler.CreateSprinkler('sprinkler2', config.sprinkler2Pin, fertilizePin);
+var sprinkler3 = new sprinkler.CreateSprinkler('sprinkler3', config.sprinkler3Pin, fertilizePin);
+var sprinkler4 = new sprinkler.CreateSprinkler('sprinkler4', config.sprinkler4Pin, fertilizePin);
+app.set('fertilizePin', fertilizePin);
 app.set('sprinkler1', sprinkler1);
 app.set('sprinkler2', sprinkler2);
 app.set('sprinkler3', sprinkler3);

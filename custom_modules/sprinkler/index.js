@@ -8,9 +8,8 @@ const Gpio = require('onoff').Gpio
 
 
 var allTimerObjects = [];
-var fertilizePin = config.fertilizePin;
 
-var Sprinkler = {
+Sprinkler = {
 
   //Initializes JSON Database if it does not exist.
   initializeDB: function(){
@@ -28,20 +27,24 @@ var Sprinkler = {
     return outputString;
   },
 
-  CreateSprinkler: function(name, gpioPin){
+  CreateSprinkler: function(name, gpioPin, fertilizePin){
     this.name = name;
     this.gpioPin = gpioPin;
-    this.fertilizePin = fertilizePin
     this.timerObjects = [];
-    var pin;
+    this.fertilizePin = fertilizePin;
+    this.wateringState = 0;
+
     if (Gpio.accessible) {
-      pin = new Gpio(this.gpioPin, 'out')
+      var pin = new Gpio(this.gpioPin, 'out')
     } else {
         console.log('Virtual sprinkler now uses value: ' + this.gpioPin);
     }
 
     if(!db.has(this.name).value())
+    {
       db.set(name, []).write();
+      db.set(name+"CoolTemp", {}).write();
+    }
 
     //////////////////////////
     //LOW DB STORAGE METHODS//
@@ -95,8 +98,15 @@ var Sprinkler = {
       let list = this.getSchedule();
       let length = list.length;
       for(let i = 0; i < length; i++){
-        this.timerObjects.push(schedule.scheduleJob(list[i].startTime, this.on));
-        this.timerObjects.push(schedule.scheduleJob(list[i].stopTime, this.off));
+        console.log(list[i].fertilizeState)
+        if(list[i].fertilizeState == false){
+          this.timerObjects.push(schedule.scheduleJob(list[i].startTime, this.onWatering));
+          this.timerObjects.push(schedule.scheduleJob(list[i].stopTime, this.offWatering));
+        }
+        else{
+          this.timerObjects.push(schedule.scheduleJob(list[i].startTime, this.onFertilize));
+          this.timerObjects.push(schedule.scheduleJob(list[i].stopTime, this.offFertilize));
+        }
       }
     }
 
@@ -113,7 +123,8 @@ var Sprinkler = {
     //ON-OFF FUNCTIONS//
     ////////////////////
     //Triggered on startTime on raspberry pi
-    this.on = function(){
+    this.onWatering = function(){
+      this.wateringState = 1;
       if(Gpio.accessible && pin != undefined) {
         pin.writeSync(1);
         process.on('SIGINT', () => {
@@ -121,12 +132,13 @@ var Sprinkler = {
         });
       }
       else {
-        console.log("ON")
+        console.log(this.name + ": Watering ON")
       }
     }
 
     //Triggered on stopTime on raspberry pi
-    this.off = function(){
+    this.offWatering = function(){
+      this.wateringState = 0;
       if(Gpio.accessible && pin != undefined) {
         pin.writeSync(0);
         process.on('SIGINT', () => {
@@ -134,9 +146,92 @@ var Sprinkler = {
         });
       }
       else {
-        console.log("OFF")
+        console.log(this.name + ": Watering OFF")
       }
     }
+
+    this.onCooling = function(){
+      if(Gpio.accessible && pin != undefined) {
+        pin.writeSync(1);
+        process.on('SIGINT', () => {
+          pin.unexport();
+        });
+      }
+      else {
+        console.log(this.name + ": Cooling ON")
+      }
+    }
+
+    //Triggered on stopTime on raspberry pi
+    this.offCooling = function(){
+      if(Gpio.accessible && pin != undefined) {
+        pin.writeSync(0);
+        process.on('SIGINT', () => {
+          pin.unexport();
+        });
+      }
+      else {
+        console.log(this.name + ": Cooling OFF")
+      }
+    }
+
+
+      this.onFertilize = function(){
+        if(Gpio.accessible && pin != undefined) {
+          pin.writeSync(1);
+          this.fertilizePin.writeSync(1);
+          process.on('SIGINT', () => {
+            this.fertilizePin.unexport();
+            pin.unexport();
+          });
+        }
+        else {
+          console.log(this.name + ": Fertilize ON")
+        }
+      }
+
+      //Triggered on stopTime on raspberry pi
+      this.offFertilize = function(){
+        if(Gpio.accessible && pin != undefined) {
+          pin.writeSync(0);
+          this.fertilizePin.writeSync(0);
+          process.on('SIGINT', () => {
+            this.fertilizePin.unexport();
+            pin.unexport();
+          });
+        }
+        else {
+          console.log(this.name + ": Fertilize OFF")
+        }
+    }
+    ////////////////////////////
+    //TEMPERATURE SENSOR STUFF//
+    ////////////////////////////
+    this.getTemperatureFromProbe = function(){
+      return "80"
+    }
+
+    this.setCoolTemperature = function(value, checkbox){
+      db.set(this.name + "CoolTemp",  {coolTemp: value, state: checkbox}).write();
+    }
+
+    this.getCoolTemperature = function(){
+      return db.get(this.name + "CoolTemp").value()
+    }
+
+    this.temperatureTask = function(data, probeTemp){
+      if (data.state == true && parseInt(probeTemp) >= parseInt(data.coolTemp))
+        this.onCooling();
+      else if ((this.wateringState == 0 && probeTemp < data.coolTemp) || (this.wateringState == 0 && data.state == false))
+        this.offCooling();
+    }
+
+    this.temperatureTaskCheck = function() {
+
+    }
+    //Check temperature every 5 seconds
+    //setInterval(() => {this.temperatureTask(this.getCoolTemperature(), this.getTemperatureFromProbe())}, 5000);
+
   }
 }
 
