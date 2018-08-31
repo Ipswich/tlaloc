@@ -1,13 +1,20 @@
 {
   "sprinkler1": [],
   "sprinkler1CoolTemp": {
-    "coolTemp": "79",
+    "coolTemp": "67",
+    "state": true
+  },
+  "sprinkler1HeatTemp": {
+    "heatTemp": "35",
     "state": true
   },
   "sprinkler2": [],
   "sprinkler2CoolTemp": {},
+  "sprinkler2HeatTemp": {},
   "sprinkler3": [],
   "sprinkler3CoolTemp": {},
+  "sprinkler3HeatTemp": {},
   "sprinkler4": [],
-  "sprinkler4CoolTemp": {}
+  "sprinkler4CoolTemp": {},
+  "sprinkler4HeatTemp": {}
 }

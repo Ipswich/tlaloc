@@ -5,10 +5,19 @@ const adapter = new FileSync('db.json');
 const db = low(adapter);
 const config = require('../config')
 const Gpio = require('onoff').Gpio
+const ds18b20 = require('ds18b20');
+
+var sensorIDs = ds18b20.sensors(function(err, ids) {
+  if (err){
+    console.log(err)
+  }
+  else
+    return ids;
+});
+
 
 
 var allTimerObjects = [];
-
 Sprinkler = {
 
   //Initializes JSON Database if it does not exist.
@@ -44,6 +53,7 @@ Sprinkler = {
     {
       db.set(name, []).write();
       db.set(name+"CoolTemp", {}).write();
+      db.set(name+"HeatTemp", {}).write();
     }
 
     //////////////////////////
@@ -176,39 +186,52 @@ Sprinkler = {
     }
 
 
-      this.onFertilize = function(){
-        if(Gpio.accessible && pin != undefined) {
-          pin.writeSync(1);
-          this.fertilizePin.writeSync(1);
-          process.on('SIGINT', () => {
-            this.fertilizePin.unexport();
-            pin.unexport();
-          });
-        }
-        else {
-          console.log(this.name + ": Fertilize ON")
-        }
+    this.onFertilize = function(){
+      if(Gpio.accessible && pin != undefined) {
+        pin.writeSync(1);
+        this.fertilizePin.writeSync(1);
+        process.on('SIGINT', () => {
+          this.fertilizePin.unexport();
+          pin.unexport();
+        });
       }
+      else {
+        console.log(this.name + ": Fertilize ON")
+      }
+    }
 
       //Triggered on stopTime on raspberry pi
-      this.offFertilize = function(){
-        if(Gpio.accessible && pin != undefined) {
-          pin.writeSync(0);
-          this.fertilizePin.writeSync(0);
-          process.on('SIGINT', () => {
-            this.fertilizePin.unexport();
-            pin.unexport();
-          });
-        }
-        else {
-          console.log(this.name + ": Fertilize OFF")
-        }
+    this.offFertilize = function(){
+      if(Gpio.accessible && pin != undefined) {
+        pin.writeSync(0);
+        this.fertilizePin.writeSync(0);
+        process.on('SIGINT', () => {
+          this.fertilizePin.unexport();
+          pin.unexport();
+        });
+      }
+      else {
+        console.log(this.name + ": Fertilize OFF")
+      }
     }
     ////////////////////////////
     //TEMPERATURE SENSOR STUFF//
     ////////////////////////////
     this.getTemperatureFromProbe = function(){
-      return "80"
+      if (sensorIDs != undefined){
+        ds18b20.temperature(sensorIDs[0], function(err, value){
+          return value;
+        });
+      }
+      else return "80"
+    }
+
+    this.setHeatTemperature = function(value, checkbox){
+      db.set(this.name + "HeatTemp",  {heatTemp: value, state: checkbox}).write();
+    }
+
+    this.getHeatTemperature = function(){
+      return db.get(this.name + "HeatTemp").value()
     }
 
     this.setCoolTemperature = function(value, checkbox){
@@ -219,19 +242,24 @@ Sprinkler = {
       return db.get(this.name + "CoolTemp").value()
     }
 
-    this.temperatureTask = function(data, probeTemp){
+    this.temperatureCoolTask = function(data, probeTemp){
       if (data.state == true && parseInt(probeTemp) >= parseInt(data.coolTemp))
         this.onCooling();
       else if ((this.wateringState == 0 && probeTemp < data.coolTemp) || (this.wateringState == 0 && data.state == false))
         this.offCooling();
     }
 
-    this.temperatureTaskCheck = function() {
-
+    this.temperatureHeatTask = function(data, probeTemp){
+      if (data.state == true && parseInt(probeTemp) <= parseInt(data.heatTemp))
+        this.onHeating();
+      else if ((probeTemp > data.heatTemp) || (data.state == false))
+        this.offHeating();
     }
-    //Check temperature every 5 seconds
-    //setInterval(() => {this.temperatureTask(this.getCoolTemperature(), this.getTemperatureFromProbe())}, 5000);
 
+    //Check temperature every 5 seconds
+    //setInterval(() => {
+    //this.temperatureHeatTask(this.getHeatTemperature(), this.getTemperatureFromProbe())
+    //this.temperatureCoolTask(this.getCoolTemperature(), this.getTemperatureFromProbe())}, 5000);
   }
 }
 

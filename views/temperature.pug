@@ -1,0 +1,76 @@
+extends layout
+include ./timerTable.pug
+
+block content
+  div.container
+    div.row
+      div.col-sm(style="text-align: center")
+        - var link = "./temperature" + sprinkler.name.slice(9);
+        
+        //- TEMPERATURE RULE
+        h1(style="text-align: center") Cooling Settings
+        p 
+          button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#TCInstructions" role="button" area-expanded="false" aria-controls="TCInstructions") Instructions
+        div#TCInstructions.collapse
+          div.card.card-body.sprinklerinformation
+            p.sprinklerinformation To change temperature based watering, 
+              | select a temperature from the dropdown, toggle the checkbox
+              | to the desired state, then click submit.
+          br
+        form(action=link method="post")
+          input(type="hidden" name="formName" value="cooltemperaturerule")
+          div.form-row
+            h5 #[u Temperature:]
+          div.form-row
+            div.form-group.col-sm.form-inline
+              if degreeType == 'F'
+                input#Temperature.form-control(name="CoolTemperature" type="number" min="65" max = "105" value = Cooling.coolTemp)
+              else
+                input#Temperature.form-control(name="CoolTemperature" type="number" min="18" max = "40" value = Cooling.coolTemp)
+            div.col-sm-2
+            div.form-group.col-sm.form-inline             
+              div.form-check.form-check-inline
+                if Cooling.state == false
+                  input#TemperatureCheckbox(type="checkbox" name="coolTempCheckbox").form-check-input
+                else
+                  input#TemperatureCheckbox(type="checkbox" name="coolTempCheckbox" checked).form-check-input
+                  
+          div.form-row
+            div.form-group.col-sm(style="text-align: center")
+              input.sprinklerbutton.button(type='submit' value="Submit").btn
+    
+      div.col-sm(style="text-align: center")          
+        //- FALLING TEMPERATURE RULE
+        h1(style="text-align: center") Heating Settings
+        p 
+          button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#THInstructions" role="button" area-expanded="false" aria-controls="THInstructions") Instructions
+        div#THInstructions.collapse
+          div.card.card-body.sprinklerinformation
+            p.sprinklerinformation To change temperature based heating, 
+              | select a temperature from the dropdown, toggle the checkbox
+              | to the desired state, then click submit.
+          br
+        form(action=link method="post")
+          input(type="hidden" name="formName" value="heattemperaturerule")
+          div.form-row
+            h5 #[u Temperature:]
+          div.form-row
+            div.form-group.col-sm.form-inline
+              if degreeType == 'F'
+                input#Temperature.form-control(name="HeatTemperature" type="number" min="32" max = "85" value = Heating.heatTemp)
+              else
+                input#Temperature.form-control(name="HeatTemperature" type="number" min="0" max = "29" value = Heating.heatTemp)
+            div.col-sm-2
+            div.form-group.col-sm.form-inline             
+              div.form-check.form-check-inline
+                if Cooling.state == false
+                  input#TemperatureCheckbox(type="checkbox" name="heatTempCheckbox").form-check-input
+                else
+                  input#TemperatureCheckbox(type="checkbox" name="heatTempCheckbox" checked).form-check-input
+                  
+          div.form-row
+            div.form-group.col-sm(style="text-align: center")
+              input.sprinklerbutton.button(type='submit' value="Submit").btn        
+      
+
+    
