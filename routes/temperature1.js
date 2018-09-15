@@ -3,7 +3,7 @@ var body = require('body-parser');
 var router = express.Router();
 var getweather = require('../custom_modules/getweather');
 var sprinkler = require('../custom_modules/sprinkler');
-var config = require('../custom_modules/config');
+var settings = require('../custom_modules/settings');
 
 var urlencodedParser = body.urlencoded({ extended: false });
 
@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
   getweather.getWeather(function(err, content){
     if (err) console.log(err);
     else {
-      content.degreeType = config.degreeType;
+      content.degreeType = settings.degreeType;
       content.sprinkler = req.app.get('sprinkler1');
       content.Cooling = content.sprinkler.getCoolTemperature();
       content.Heating = content.sprinkler.getHeatTemperature();
@@ -28,7 +28,7 @@ router.post('/', urlencodedParser, function(req, res, next){
   getweather.getWeather(function(err, content){
     if (err) console.log(err);
     else {
-      content.degreeType = config.degreeType;
+      content.degreeType = settings.degreeType;
       content.sprinkler = req.app.get('sprinkler1');
       content.Cooling = content.sprinkler.getCoolTemperature();
       content.Heating = content.sprinkler.getHeatTemperature();

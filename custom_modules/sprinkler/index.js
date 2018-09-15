@@ -3,10 +3,12 @@ const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('db.json');
 const db = low(adapter);
-const config = require('../config')
+const settings = require('../settings')
 const Gpio = require('onoff').Gpio
 const ds18b20 = require('ds18b20');
 
+
+//Load sensor IDs into array for access
 var sensorIDs = ds18b20.sensors(function(err, ids) {
   if (err){
     console.log(err)
@@ -16,39 +18,31 @@ var sensorIDs = ds18b20.sensors(function(err, ids) {
 });
 
 
-
-var allTimerObjects = [];
 Sprinkler = {
-
-  //Initializes JSON Database if it does not exist.
-  initializeDB: function(){
-    if(db.getState() == 'undefined'){
-      db.defaults({}).write();
-    }
-    else {
-      console.log("DB already exists, skipping DB creation. . .")
-    }
-  },
-
   //Parses input into string for timers
   inputParser: (minute, hour, dayOfMonth, month, dayOfWeek) => {
     let outputString = ("0 " + minute + " " + hour + " " + dayOfMonth + " * " + dayOfWeek)
     return outputString;
   },
 
+  //Constructor method for creating a sprinkler device.
   CreateSprinkler: function(name, gpioPin, fertilizePin){
     this.name = name;
     this.gpioPin = gpioPin;
     this.timerObjects = [];
     this.fertilizePin = fertilizePin;
     this.wateringState = 0;
+    this.fertilizeState = 0;
+    this.temperatureState = "Off";
 
+    //Set Pin if GPIO hardware exists
     if (Gpio.accessible) {
       var pin = new Gpio(this.gpioPin, 'out')
     } else {
         console.log('Virtual sprinkler now uses value: ' + this.gpioPin);
     }
 
+    //Createthis sprinkler DB if the database hasn't been previously created.
     if(!db.has(this.name).value())
     {
       db.set(name, []).write();
@@ -108,7 +102,6 @@ Sprinkler = {
       let list = this.getSchedule();
       let length = list.length;
       for(let i = 0; i < length; i++){
-        console.log(list[i].fertilizeState)
         if(list[i].fertilizeState == false){
           this.timerObjects.push(schedule.scheduleJob(list[i].startTime, this.onWatering));
           this.timerObjects.push(schedule.scheduleJob(list[i].stopTime, this.offWatering));
@@ -130,9 +123,30 @@ Sprinkler = {
     }
 
     ////////////////////
+    ////DATA GETTERS////
+    ////////////////////
+
+    //Returns the current state of watering
+    this.getWateringState = function(){
+      return this.wateringState
+    }
+
+    //Returns the current state of fertilize
+    this.getFertilizeState = function(){
+      return this.fertilizeState;
+    }
+
+    //Returns the current state of heating/cooling
+    this.getTemperatureState = function(){
+      return this.temperatureState;
+    }
+
+
+    ////////////////////
     //ON-OFF FUNCTIONS//
     ////////////////////
-    //Triggered on startTime on raspberry pi
+
+    //Function for turning on watering
     this.onWatering = function(){
       this.wateringState = 1;
       if(Gpio.accessible && pin != undefined) {
@@ -146,7 +160,7 @@ Sprinkler = {
       }
     }
 
-    //Triggered on stopTime on raspberry pi
+    //Function for turning off watering
     this.offWatering = function(){
       this.wateringState = 0;
       if(Gpio.accessible && pin != undefined) {
@@ -160,6 +174,7 @@ Sprinkler = {
       }
     }
 
+    //Function for turning on cooling by sprinklers (Should not override watering)
     this.onCooling = function(){
       if(Gpio.accessible && pin != undefined) {
         pin.writeSync(1);
@@ -172,7 +187,7 @@ Sprinkler = {
       }
     }
 
-    //Triggered on stopTime on raspberry pi
+    //Function for turning off cooling by sprinklers (Should not override watering)
     this.offCooling = function(){
       if(Gpio.accessible && pin != undefined) {
         pin.writeSync(0);
@@ -185,11 +200,12 @@ Sprinkler = {
       }
     }
 
-
+    //Function for turning on fertilizer
     this.onFertilize = function(){
       if(Gpio.accessible && pin != undefined) {
         pin.writeSync(1);
         this.fertilizePin.writeSync(1);
+        this.fertilizeState = 1;
         process.on('SIGINT', () => {
           this.fertilizePin.unexport();
           pin.unexport();
@@ -200,11 +216,12 @@ Sprinkler = {
       }
     }
 
-      //Triggered on stopTime on raspberry pi
+      //Function for turning off fertilizer
     this.offFertilize = function(){
       if(Gpio.accessible && pin != undefined) {
         pin.writeSync(0);
         this.fertilizePin.writeSync(0);
+        this.fertilizeState = 0;
         process.on('SIGINT', () => {
           this.fertilizePin.unexport();
           pin.unexport();
@@ -217,49 +234,87 @@ Sprinkler = {
     ////////////////////////////
     //TEMPERATURE SENSOR STUFF//
     ////////////////////////////
+    //Get temperature data from probe, returns temperature based on degreeType specified in the settings file.
     this.getTemperatureFromProbe = function(){
       if (sensorIDs != undefined){
         ds18b20.temperature(sensorIDs[0], function(err, value){
-          return value;
+          if (err)
+            return err;
+          else if (settings.degreeType == "F")
+            return value;
+          else
+            return ((value - 32) * (5/9));
         });
       }
       else return "80"
     }
 
+    //Sets the threshold for turning on heating, and whether or not it is enabled.
+    //Stores info in the DB
     this.setHeatTemperature = function(value, checkbox){
       db.set(this.name + "HeatTemp",  {heatTemp: value, state: checkbox}).write();
     }
 
-    this.getHeatTemperature = function(){
-      return db.get(this.name + "HeatTemp").value()
+    this.setHeatStatus = function(value){
+      db.set(this.name + "HeatTemp.enableState", value).write();
     }
 
+    //Returns the threshold for turning on the heating, and whether or not it is enabled.
+    this.getHeatTemperature = function(){
+      return db.get(this.name + "HeatTemp").value();
+    }
+
+    //Sets the threshold for turning on cooling, and whether or not it is enabled.
+    //Stores info in the DB.
     this.setCoolTemperature = function(value, checkbox){
       db.set(this.name + "CoolTemp",  {coolTemp: value, state: checkbox}).write();
     }
 
+    this.setCoolStatus = function(value){
+      db.set(this.name + "CoolTemp.enableState", value).write();
+    }
+
+    //Returns the threshold for turning on the cooling, and whether or not it is enabled.
     this.getCoolTemperature = function(){
-      return db.get(this.name + "CoolTemp").value()
+      return db.get(this.name + "CoolTemp").value();
     }
 
-    this.temperatureCoolTask = function(data, probeTemp){
-      if (data.state == true && parseInt(probeTemp) >= parseInt(data.coolTemp))
-        this.onCooling();
-      else if ((this.wateringState == 0 && probeTemp < data.coolTemp) || (this.wateringState == 0 && data.state == false))
-        this.offCooling();
+    //Checks whether or not cooling should be turned on or off.
+    this.temperatureCoolTask = function(err, data, probeTemp){
+      if (err)
+        console.log("ERROR: Cool task failed.");
+      else {
+        if (data.state == true && data.enableState == true && parseInt(probeTemp) >= parseInt(data.coolTemp)){
+          this.temperatureState = "Cooling"
+          this.onCooling();
+        }
+        if ((this.wateringState == 0 && probeTemp < data.coolTemp) || (this.wateringState == 0 && data.state == false)){
+          this.temperatureState = "Off"
+          this.offCooling();
+        }
+      }
     }
 
-    this.temperatureHeatTask = function(data, probeTemp){
-      if (data.state == true && parseInt(probeTemp) <= parseInt(data.heatTemp))
-        this.onHeating();
-      else if ((probeTemp > data.heatTemp) || (data.state == false))
-        this.offHeating();
+    //Checks whether or not heating should be turned on or off.
+    this.temperatureHeatTask = function(err, data, probeTemp){
+      if (err)
+        console.log("ERROR: Heat task failed.");
+      else {
+        if (data.state == true && data.enableState == true && parseInt(probeTemp) <= parseInt(data.heatTemp)){
+          this.temperatureState = "Heating"
+          this.onHeating();
+        }
+        if ((probeTemp > data.heatTemp) || (data.state == false)){
+          this.temperatureState = "Off"
+          this.offHeating();
+        }
+      }
     }
 
-    //Check temperature every 5 seconds
-    //setInterval(() => {
-    //this.temperatureHeatTask(this.getHeatTemperature(), this.getTemperatureFromProbe())
-    //this.temperatureCoolTask(this.getCoolTemperature(), this.getTemperatureFromProbe())}, 5000);
+    //Check temperature every 5 seconds to evaluate heating and cooling states
+    // setInterval(() => {
+    // this.temperatureHeatTask(this.getHeatTemperature(), this.getTemperatureFromProbe())
+    // this.temperatureCoolTask(this.getCoolTemperature(), this.getTemperatureFromProbe())}, 5000);
   }
 }
 

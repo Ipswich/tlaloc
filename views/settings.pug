@@ -1,0 +1,131 @@
+extends layout
+block content
+  div.container
+    div.row
+      div.col-sm(style="text-align: center")
+        h1 Settings and Configuration
+        hr
+    div.row
+      div.col-sm(style="margin: auto; text-align: left")
+        form(action="#" method="post")
+          div
+            input(type="hidden" name="formName" value="settings")
+            //-
+            //- Degree Selection
+            //-
+            fieldset.form-group
+              h4.col-sm #[u Degree Units]
+              div.col-sm.form-group            
+                if degreeType == 'F'
+                  div.form-check
+                    input#degreeTypeC(type="radio" value="C" name="degreeTypeRadio").form-check-input
+                    label.form-check-label(for="degreeTypeC") Celsius
+                  div.form-check
+                    input#degreeTypeF(type="radio" value="F" name="degreeTypeRadio" checked).form-check-input
+                    label.form-check-label(for="degreeTypeF") Fahrenheit
+                else                
+                  div.form-check
+                    input#degreeTypeC(type="radio" value="C" name="degreeTypeRadio" checked).form-check-input
+                    label.form-check-label(for="degreeTypeC") Celsius
+                  div.form-check
+                    input#degreeTypeF(type="radio" value="F" name="degreeTypeRadio").form-check-input
+                    label.form-check-label(for="degreeTypeF") Fahrenheit 
+          br
+          //-        
+          //- RENAME and DISPLAY/HIDE zones
+          //-
+          div.row
+            div.col-sm
+              fieldset.form-group
+                h4.col-sm #[u Zone 1]                   
+                div.col-sm.row.form-group
+                  div(style="text-align:left").col-sm
+                    div.row
+                      label(for="zone1").col-sm-auto.col-form-label Rename zone:
+                      input#zone1(type="text" name="zone1" value=content.link2)
+                    div.row
+                      h4.col-form-label.col-sm #[u #[strong Hide/Show]]
+                    div.row.form-check
+                      label(for="waterVis1").col-sm-auto Watering
+                      if toggles.link1watering == true
+                        input#waterVis1(type="checkbox" name="waterVis1" value="true" checked)
+                      else
+                        input#waterVis1(type="checkbox" name="waterVis1" value="true")
+                    div.row.form-check             
+                      label(for="tempVis1").col-sm-auto Temperature
+                      if toggles.link1temperature == true
+                        input#tempVis1(type="checkbox" name="tempVis1" value="true" checked)
+                      else
+                        input#tempVis1(type="checkbox" name="tempVis1" value="true")
+            div.col-sm
+              fieldset.form-group
+                h4.col-sm #[u Zone 2]                   
+                div.col-sm.row.form-group
+                  div(style="text-align:left").col-sm
+                    div.row
+                      label(for="zone2").col-sm-auto.col-form-label Rename zone:
+                      input#zone2(type="text" name="zone2" value=content.link3)
+                    div.row
+                      h4.col-form-label.col-sm #[u #[strong Hide/Show]]
+                    div.row.form-check
+                      label(for="waterVis2").col-sm-auto Watering
+                      if toggles.link2watering == true
+                        input#waterVis2(type="checkbox" name="waterVis2" value="true" checked)
+                      else
+                        input#waterVis2(type="checkbox" name="waterVis2" value="true")
+                    div.row.form-check             
+                      label(for="tempVis2").col-sm-auto Temperature
+                      if toggles.link2temperature == true
+                        input#tempVis2(type="checkbox" name="tempVis2" value="true" checked)
+                      else
+                        input#tempVis2(type="checkbox" name="tempVis2" value="true")
+          div.row
+            div.col-sm
+              fieldset.form-group
+                h4.col-sm #[u Zone 3]                   
+                div.col-sm.row.form-group
+                  div(style="text-align:left").col-sm
+                    div.row
+                      label(for="zone1").col-sm-auto.col-form-label Rename zone:
+                      input#zone3(type="text" name="zone3" value=content.link4)
+                    div.row
+                      h4.col-form-label.col-sm #[u #[strong Hide/Show]]
+                    div.row.form-check
+                      label(for="waterVis3").col-sm-auto Watering
+                      if toggles.link3watering == true
+                        input#waterVis3(type="checkbox" name="waterVis3" value="true" checked)
+                      else
+                        input#waterVis3(type="checkbox" name="waterVis3" value="true")
+                    div.row.form-check             
+                      label(for="tempVis3").col-sm-auto Temperature
+                      if toggles.link3temperature == true
+                        input#tempVis3(type="checkbox" name="tempVis3" value="true" checked)
+                      else
+                        input#tempVis3(type="checkbox" name="tempVis3" value="true")
+            div.col-sm
+              fieldset.form-group
+                h4.col-sm #[u Zone 4]                   
+                div.col-sm.row.form-group
+                  div(style="text-align:left").col-sm
+                    div.row
+                      label(for="zone4").col-sm-auto.col-form-label Rename zone:
+                      input#zone4(type="text" name="zone4" value=content.link5)
+                    div.row
+                      h4.col-form-label.col-sm #[u #[strong Hide/Show]]
+                    div.row.form-check
+                      label(for="waterVis4").col-sm-auto Watering
+                      if toggles.link4watering == true
+                        input#waterVis4(type="checkbox" name="waterVis4" value="true" checked)
+                      else
+                        input#waterVis4(type="checkbox" name="waterVis4" value="true")                                                  
+                    div.row.form-check             
+                      label(for="tempVis4").col-sm-auto Temperature
+                      if toggles.link4temperature == true
+                        input#tempVis4(type="checkbox" name="tempVis4" value="true" checked)
+                      else
+                        input#tempVis4(type="checkbox" name="tempVis4" value="true")
+                  
+                  
+          div.form-group.col-sm(style="text-align: center")
+              h6 #[i Note: Hidden zones are disabled.]
+              input.sprinklerbutton.button(type='submit' value="Submit").btn

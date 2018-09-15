@@ -1,3 +1,3 @@
-sudo modprobe wire
-sudo modprobe w1-gpio
-sudo modprobe w1-therm
+modprobe wire
+modprobe w1-gpio
+modprobe w1-therm

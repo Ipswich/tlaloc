@@ -1,11 +1,45 @@
 {
+  "settings": {
+    "degreeType": "F",
+    "sprinkler1Pin": 7,
+    "sprinkler2Pin": 8,
+    "sprinkler3Pin": 9,
+    "sprinkler4Pin": 10,
+    "fertilizePin": 21,
+    "heaterPin": 22,
+    "content": {
+      "sidebarTitle": "Tlaloc",
+      "sidebarHeading": "Sprinkler Controller",
+      "link1": "Overview",
+      "link2": "Zone 1",
+      "link3": "Zone 2",
+      "link4": "Zone 3",
+      "link5": "Zone 4",
+      "Sublink1": "Watering",
+      "Sublink2": "Temperature",
+      "linkLast": "Settings"
+    },
+    "toggles": {
+      "link1watering": true,
+      "link1temperature": true,
+      "link2watering": true,
+      "link2temperature": true,
+      "link3watering": true,
+      "link3temperature": true,
+      "link4watering": true,
+      "link4temperature": true
+    },
+    "time": "Fri Sep 14 2018, 12:28 PM",
+    "error": "err",
+    "_locals": {}
+  },
   "sprinkler1": [],
   "sprinkler1CoolTemp": {
-    "coolTemp": "67",
+    "coolTemp": "18",
     "state": true
   },
   "sprinkler1HeatTemp": {
-    "heatTemp": "35",
+    "heatTemp": "1",
     "state": true
   },
   "sprinkler2": [],

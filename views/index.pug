@@ -1,6 +1,25 @@
 extends layout.pug
 
 block content
-  p Welcome to Tlaloc!
-  
-  
+  div.container
+    div.row
+      div.col-sm(style="text-align: center")
+        h1 Overview
+        hr
+    div(style="margin: auto; text-align: left").row
+        div.col-sm-6
+          h4.col-sm #[u #{content.link2}]
+          p Current Temperature: #{sprinkler1Functions.getTemperatureFromProbe()}
+          if sprinkler1Functions.getWateringState() == 0
+            p Watering: Off
+          else
+            p Watering: On
+          p Temperature Control: #{sprinkler1Functions.getTemperatureState()}
+        div.col-sm-6
+          h4.col-sm #[u #{content.link3}]
+    br
+    div(style="margin: auto; text-align: left").row
+        div.col-sm-6
+          h4.col-sm #[u #{content.link4}]
+        div.col-sm-6
+          h4.col-sm #[u #{content.link5}]

@@ -1,11 +1,11 @@
 var weather = require('weather-js');
-var config = require('../config');
+var settings = require('../settings');
 var content;
 
 getWeather = function(callback){
 
   //Prepare date/time for document
-  var content = config.content;
+  var content = settings.settingsFunctions.getSettingsData();
   var date = new Date();
   var hours = date.getHours();
   var hoursMeridian = (hours >= 12) ? "PM" : "AM";
@@ -18,20 +18,18 @@ getWeather = function(callback){
 
   //Prepare weather for document - requires connection (ASYNC)
   var weatherdata;
-  weather.find({search: config.location, degreeType: config.degreeType}, function(err, result) {
+  weather.find({search: content.location, degreeType: content.degreeType}, function(err, result) {
     if(err){
-      content.location = config.location;
+      content.location = settings.location;
       content.time = date.toDateString() + ", " + formattedTime;
       content.error = "err";
-      // console.log('--NO INTERNET CONNECTION--')
       callback(null, content);
     }
     else{
       weatherdata = result[0];
-      content.location = config.location;
+      content.location = settings.location;
       content.time = date.toDateString() + ", " + formattedTime;
       content.weatherdata = weatherdata;
-      // console.log('--CONNECTION SUCCESSFUL--')
       callback(null, content);
     }
   });

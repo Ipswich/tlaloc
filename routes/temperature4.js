@@ -16,9 +16,10 @@ router.get('/', function(req, res, next) {
       content.degreeType = settings.degreeType;
       content.sprinkler = req.app.get('sprinkler4');
       content.Cooling = content.sprinkler.getCoolTemperature();
+      content.Heating = content.sprinkler.getHeatTemperature();
 
-      console.log(content)
-      res.render('./sprinkler', content);
+      console.log(content.Heating)
+      res.render('./temperature', content);
     }
   });
 });
@@ -30,24 +31,19 @@ router.post('/', urlencodedParser, function(req, res, next){
       content.degreeType = settings.degreeType;
       content.sprinkler = req.app.get('sprinkler4');
       content.Cooling = content.sprinkler.getCoolTemperature();
+      content.Heating = content.sprinkler.getHeatTemperature();
       console.log(content);
-
-      if (req.body.formName == "newrule"){
-        var startString = sprinkler.inputParser(req.body.Startminute, req.body.Starthour, req.body.StartdayOfMonth, req.body.Startmonth, req.body.StartdayOfWeek);
-        var stopString = sprinkler.inputParser(req.body.Stopminute, req.body.Stophour, req.body.StopdayOfMonth, req.body.Stopmonth, req.body.StopdayOfWeek);
-        (req.body.fertilizeCheckbox == undefined) ? fertilize = false : fertilize = true;
-        content.sprinkler.addTimer(startString, stopString, fertilize)
-        content.sprinkler.cancelAllTimers();
-        content.sprinkler.commitAllTimers();
-        res.render('./sprinkler', content);
+      if (req.body.formName == "cooltemperaturerule"){
+        var coolstate = (req.body.coolTempCheckbox == "on") ? true : false;
+        content.sprinkler.setCoolTemperature(req.body.CoolTemperature, coolstate);
+        content.Cooling = content.sprinkler.getCoolTemperature();
+        res.render('./temperature', content);
       }
-      else if (req.body.formName == "removerule"){
-        for(let i = Object.entries(req.body).length - 1; i > 0; i--){
-          content.sprinkler.removeTimerByIndex(Object.entries(req.body)[i][0].slice(6));
-        }
-        content.sprinkler.cancelAllTimers();
-        content.sprinkler.commitAllTimers();
-        res.render('./sprinkler', content);
+      if (req.body.formName == "heattemperaturerule"){
+        var heatstate = (req.body.heatTempCheckbox == "on") ? true : false;
+        content.sprinkler.setHeatTemperature(req.body.HeatTemperature, heatstate);
+        content.Heating = content.sprinkler.getHeatTemperature();
+        res.render('./temperature', content);
       }
     }
   });
