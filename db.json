@@ -1,12 +1,13 @@
 {
   "settings": {
+    "location": "Salem, OR",
     "degreeType": "F",
-    "sprinkler1Pin": 7,
-    "sprinkler2Pin": 8,
-    "sprinkler3Pin": 9,
-    "sprinkler4Pin": 10,
-    "fertilizePin": 21,
-    "heaterPin": 22,
+    "sprinkler1Pin": 5,
+    "sprinkler2Pin": 6,
+    "sprinkler3Pin": 13,
+    "sprinkler4Pin": 19,
+    "fertilizePin": 26,
+    "heaterPin": 12,
     "content": {
       "sidebarTitle": "Tlaloc",
       "sidebarHeading": "Sprinkler Controller",
@@ -20,35 +21,50 @@
       "linkLast": "Settings"
     },
     "toggles": {
-      "link1watering": true,
-      "link1temperature": true,
-      "link2watering": true,
-      "link2temperature": true,
-      "link3watering": true,
-      "link3temperature": true,
-      "link4watering": true,
-      "link4temperature": true
-    },
-    "time": "Fri Sep 14 2018, 12:28 PM",
-    "error": "err",
-    "_locals": {}
+      "sprinkler1watering": true,
+      "sprinkler1temperature": true,
+      "sprinkler2watering": true,
+      "sprinkler2temperature": true,
+      "sprinkler3watering": true,
+      "sprinkler3temperature": true,
+      "sprinkler4watering": true,
+      "sprinkler4temperature": true
+    }
   },
   "sprinkler1": [],
   "sprinkler1CoolTemp": {
-    "coolTemp": "18",
-    "state": true
+    "coolTemp": 85,
+    "state": false
   },
   "sprinkler1HeatTemp": {
-    "heatTemp": "1",
-    "state": true
+    "heatTemp": 65,
+    "state": false
   },
   "sprinkler2": [],
-  "sprinkler2CoolTemp": {},
-  "sprinkler2HeatTemp": {},
+  "sprinkler2CoolTemp": {
+    "coolTemp": 85,
+    "state": false
+  },
+  "sprinkler2HeatTemp": {
+    "heatTemp": 65,
+    "state": false
+  },
   "sprinkler3": [],
-  "sprinkler3CoolTemp": {},
-  "sprinkler3HeatTemp": {},
+  "sprinkler3CoolTemp": {
+    "coolTemp": 85,
+    "state": false
+  },
+  "sprinkler3HeatTemp": {
+    "heatTemp": 65,
+    "state": false
+  },
   "sprinkler4": [],
-  "sprinkler4CoolTemp": {},
-  "sprinkler4HeatTemp": {}
+  "sprinkler4CoolTemp": {
+    "coolTemp": 85,
+    "state": false
+  },
+  "sprinkler4HeatTemp": {
+    "heatTemp": 65,
+    "state": false
+  }
 }

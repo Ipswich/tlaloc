@@ -22,6 +22,11 @@ p {
     color: #999;
 }
 
+p.overview {
+  color: var(--website-text-light)
+}
+
+
 a,
 a:hover,
 a:focus {

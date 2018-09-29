@@ -8,18 +8,70 @@ block content
         hr
     div(style="margin: auto; text-align: left").row
         div.col-sm-6
-          h4.col-sm #[u #{content.link2}]
-          p Current Temperature: #{sprinkler1Functions.getTemperatureFromProbe()}
-          if sprinkler1Functions.getWateringState() == 0
-            p Watering: Off
-          else
-            p Watering: On
-          p Temperature Control: #{sprinkler1Functions.getTemperatureState()}
+          if toggles.sprinkler1temperature == true || toggles.sprinkler1watering == true
+            h4.col-sm #[u #{content.link2}]
+            p Current Temperature: #{sprinkler1.currentTemperature}
+            if toggles.sprinkler1watering == true
+              if sprinkler1.wateringState == 0
+                p Watering: Off
+              else
+                p.overview Watering: On
+            if toggles.sprinkler1temperature == true
+              if sprinkler1.temperatureState == "Off"
+                p Temperature Control: Off
+              else if sprinkler1.temperatureState == "Cooling"
+                p.overview Temperature Control: Cooling
+              else if sprinkler1.temperatureState == "Heating"
+                p.overview Temperature Control: Heating
+          
         div.col-sm-6
-          h4.col-sm #[u #{content.link3}]
+          if toggles.sprinkler2temperature == true || toggles.sprinkler2watering == true
+            h4.col-sm #[u #{content.link3}]
+            p Current Temperature: #{sprinkler2.currentTemperature}
+            if toggles.sprinkler2watering == true
+              if sprinkler2.wateringState == 0
+                p Watering: Off
+              else
+                p.overview Watering: On
+            if toggles.sprinkler2temperature == true    
+              if sprinkler2.temperatureState == "Off"
+                p Temperature Control: Off
+              else if sprinkler2.temperatureState == "Cooling"
+                p.overview Temperature Control: Cooling
+              else if sprinkler2.temperatureState == "Heating"
+                p.overview Temperature Control: Heating
     br
     div(style="margin: auto; text-align: left").row
         div.col-sm-6
-          h4.col-sm #[u #{content.link4}]
+          if toggles.sprinkler3temperature == true || toggles.sprinkler3watering == true
+            h4.col-sm #[u #{content.link4}]
+            p Current Temperature: #{sprinkler3.currentTemperature}
+            if toggles.sprinkler3watering == true
+              if sprinkler3.wateringState == 0
+                p Watering: Off
+              else
+                p.overview Watering: On
+            if toggles.sprinkler3temperature == true
+              if sprinkler3.temperatureState == "Off"
+                p Temperature Control: Off
+              else if sprinkler3.temperatureState == "Cooling"
+                p.overview Temperature Control: Cooling
+              else if sprinkler3.temperatureState == "Heating"
+                p.overview Temperature Control: Heating
+          
         div.col-sm-6
-          h4.col-sm #[u #{content.link5}]
+          if toggles.sprinkler4temperature == true || toggles.sprinkler4watering == true
+            h4.col-sm #[u #{content.link5}]
+            p Current Temperature: #{sprinkler4.currentTemperature}
+            if toggles.sprinkler4watering == true
+              if sprinkler4.wateringState == 0
+                p Watering: Off
+              else
+                p.overview Watering: On
+            if toggles.sprinkler4temperature == true
+              if sprinkler4.temperatureState == "Off"
+                p Temperature Control: Off
+              else if sprinkler4.temperatureState == "Cooling"
+                p.overview Temperature Control: Cooling
+              else if sprinkler4.temperatureState == "Heating"
+                p.overview Temperature Control: Heating

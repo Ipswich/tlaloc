@@ -36,52 +36,72 @@ var settingsRouter = require('./routes/settings');
 //Create App
 var app = express();
 
+var data;
+var fertilizePin;
+var heaterPin;
+
+var sprinkler1;
+var sprinkler2;
+var sprinkler3;
+var sprinkler4;
+
 //Load settings data
-var data = settings.settingsFunctions.getSettingsData();
 //OneWire Sensor Setup (load LKMs for thermoprobe)
 console.log("Loading onewire drivers...");
 exec('sh ./bin/modules.sh', (error, stdout, stderr) =>{
   if(error != null){
     console.log("An error has occurred, please load onewire drivers manually (tlaloc/bin/modules.sh)");
     console.log(error)
-    console.log(stderr)
+    process.exit(0);
   }
   else {
     console.log("Onewire drivers loaded successfully.");
   }
 });
 
-//Check if flat file has been initialized, if not create empty JSON file
-if(db.getState() == 'undefined'){
-  db.defaults({}).write();
-}
-else {
-  console.log("DB already exists, skipping DB creation. . .")
-}
+//Promise for DB creation
+new Promise((resolve, reject) => {
+  //Check if JSON file has been initialized, if not create empty file
+  if(!db.has("settings").value()){
+    db.defaults(settings.defaultContent).write();
+    db.read();
+  }
+  else {
+    console.log("Database file/data already exists, skipping creation. . .")
+  }
+  resolve();
+})
+.then(() => {
+  data = settings.settingsFunctions.getSettingsData()
+})
+.then(() => {
+  if (Gpio.accessible) {
+    fertilizePin = new Gpio(data.settings.fertilizePin, 'out');
+    heaterPin = new Gpio(data.settings.heaterPin, 'out');
+  } else {
+      console.log('Virtual fertilizer now uses value: ' + data.fertilizePin);
+      console.log('Virtual heater now uses value: ' + data.heaterPin);
+  }
+})
+.then(() => {
+  sprinkler1 = new sprinkler.CreateSprinkler('sprinkler1', data.sprinkler1Pin, fertilizePin, heaterPin);
+  sprinkler2 = new sprinkler.CreateSprinkler('sprinkler2', data.sprinkler2Pin, fertilizePin, heaterPin);
+  sprinkler3 = new sprinkler.CreateSprinkler('sprinkler3', data.sprinkler3Pin, fertilizePin, heaterPin);
+  sprinkler4 = new sprinkler.CreateSprinkler('sprinkler4', data.sprinkler4Pin, fertilizePin, heaterPin);
 
-//Misc Pin setup
-let fertilizePin;
-let heaterPin;
-if (Gpio.accessible) {
-  fertilizePin = new Gpio(data.fertilizePin, 'out');
-  heaterPin = new Gpio(data.heaterPin, 'out');
-} else {
-    console.log('Virtual fertilizer now uses value: ' + data.fertilizePin);
-    console.log('Virtual heater now uses value: ' + data.heaterPin);
-}
-
-//Sprinkler setup
-var sprinkler1 = new sprinkler.CreateSprinkler('sprinkler1', data.sprinkler1Pin, fertilizePin);
-var sprinkler2 = new sprinkler.CreateSprinkler('sprinkler2', data.sprinkler2Pin, fertilizePin);
-var sprinkler3 = new sprinkler.CreateSprinkler('sprinkler3', data.sprinkler3Pin, fertilizePin);
-var sprinkler4 = new sprinkler.CreateSprinkler('sprinkler4', data.sprinkler4Pin, fertilizePin);
-app.set('fertilizePin', fertilizePin);
-app.set('heaterPin', heaterPin);
-app.set('sprinkler1', sprinkler1);
-app.set('sprinkler2', sprinkler2);
-app.set('sprinkler3', sprinkler3);
-app.set('sprinkler4', sprinkler4);
-
+  sprinkler1.commitAllTimers();
+  sprinkler2.commitAllTimers();
+  sprinkler3.commitAllTimers();
+  sprinkler4.commitAllTimers();
+})
+.then(() => {
+  app.set('fertilizePin', fertilizePin);
+  app.set('heaterPin', heaterPin);
+  app.set('sprinkler1', sprinkler1);
+  app.set('sprinkler2', sprinkler2);
+  app.set('sprinkler3', sprinkler3);
+  app.set('sprinkler4', sprinkler4);
+});
 
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -136,5 +156,7 @@ app.use(function(err, req, res, next) {
     else res.render('error', content);
   });
 });
+
+
 
 module.exports = app;

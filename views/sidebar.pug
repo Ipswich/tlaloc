@@ -7,47 +7,47 @@ mixin sidebar
     ul.list-unstyled.components
       li
         a(href="/") #{content.link1}
-      if toggles.link1watering == true || toggles.link1temperature == true
+      if toggles.sprinkler1watering == true || toggles.sprinkler1temperature == true
         li
           a.dropdown-toggle(href="#link2Submenu" data-toggle="collapse" aria-expanded="false") #{content.link2}
           ul#link2Submenu.collapse.list-unstyled
-            if toggles.link1watering == true
+            if toggles.sprinkler1watering == true
               li
                 a(href="/sprinkler1") #{content.Sublink1}
-            if toggles.link1temperature == true
+            if toggles.sprinkler1temperature == true
               li
                 a(href="/temperature1") #{content.Sublink2}
                 
-      if toggles.link2watering == true || toggles.link2temperature == true
+      if toggles.sprinkler2watering == true || toggles.sprinkler2temperature == true
         li
           a.dropdown-toggle(href="#link3Submenu" data-toggle="collapse" aria-expanded="false") #{content.link3}
           ul#link3Submenu.collapse.list-unstyled
-            if toggles.link2watering == true
+            if toggles.sprinkler2watering == true
               li
                 a(href="/sprinkler2") #{content.Sublink1}
-            if toggles.link2temperature == true
+            if toggles.sprinkler2temperature == true
               li
                 a(href="/temperature2") #{content.Sublink2}
                 
-      if toggles.link3watering == true || toggles.link3temperature == true
+      if toggles.sprinkler3watering == true || toggles.sprinkler3temperature == true
         li
           a.dropdown-toggle(href="#link4Submenu" data-toggle="collapse" aria-expanded="false") #{content.link4}
           ul#link4Submenu.collapse.list-unstyled
-            if toggles.link3watering == true
+            if toggles.sprinkler3watering == true
               li
                 a(href="/sprinkler3") #{content.Sublink1}
-            if toggles.link3temperature == true
+            if toggles.sprinkler3temperature == true
               li
                 a(href="/temperature3") #{content.Sublink2}
                           
-      if toggles.link4watering == true || toggles.link4temperature == true
+      if toggles.sprinkler4watering == true || toggles.sprinkler4temperature == true
         li
           a.dropdown-toggle(href="#link5Submenu" data-toggle="collapse" aria-expanded="false") #{content.link5}
           ul#link5Submenu.collapse.list-unstyled
-            if toggles.link4watering == true
+            if toggles.sprinkler4watering == true
               li
                 a(href="/sprinkler1") #{content.Sublink1}
-            if toggles.link4temperature == true
+            if toggles.sprinkler4temperature == true
               li
                 a(href="/temperature4") #{content.Sublink2}
       li

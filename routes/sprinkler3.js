@@ -16,8 +16,6 @@ router.get('/', function(req, res, next) {
       content.degreeType = settings.degreeType;
       content.sprinkler = req.app.get('sprinkler3');
       content.Cooling = content.sprinkler.getCoolTemperature();
-
-      console.log(content)
       res.render('./sprinkler', content);
     }
   });
@@ -30,8 +28,6 @@ router.post('/', urlencodedParser, function(req, res, next){
       content.degreeType = settings.degreeType;
       content.sprinkler = req.app.get('sprinkler3');
       content.Cooling = content.sprinkler.getCoolTemperature();
-      console.log(content);
-
       if (req.body.formName == "newrule"){
         var startString = sprinkler.inputParser(req.body.Startminute, req.body.Starthour, req.body.StartdayOfMonth, req.body.Startmonth, req.body.StartdayOfWeek);
         var stopString = sprinkler.inputParser(req.body.Stopminute, req.body.Stophour, req.body.StopdayOfMonth, req.body.Stopmonth, req.body.StopdayOfWeek);
