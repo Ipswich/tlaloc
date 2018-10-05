@@ -12,9 +12,8 @@ const exec = require('child_process').exec;
 
 //Custom Modules
 var getweather = require('./custom_modules/getweather');
-var sprinkler = require('./custom_modules/sprinkler');
+var Sprinkler = require('./custom_modules/sprinkler');
 var settings = require('./custom_modules/settings');
-
 //Routers
 var indexRouter = require('./routes/index');
 var aboutRouter = require('./routes/about');
@@ -51,7 +50,7 @@ console.log("Loading onewire drivers...");
 exec('sh ./bin/modules.sh', (error, stdout, stderr) =>{
   if(error != null){
     console.log("An error has occurred, please load onewire drivers manually (tlaloc/bin/modules.sh)");
-    console.log(error)
+    console.log(error);
     process.exit(0);
   }
   else {
@@ -61,33 +60,38 @@ exec('sh ./bin/modules.sh', (error, stdout, stderr) =>{
 
 //Promise for DB creation
 new Promise((resolve, reject) => {
-  //Check if JSON file has been initialized, if not create empty file
+  //Check if JSON file has been created/initialized, if not create file and/or set defaults
   if(!db.has("settings").value()){
     db.defaults(settings.defaultContent).write();
     db.read();
   }
   else {
-    console.log("Database file/data already exists, skipping creation. . .")
+    console.log("Database file/data already exists, skipping creation. . .");
   }
   resolve();
 })
 .then(() => {
-  data = settings.settingsFunctions.getSettingsData()
+  data = settings.settingsFunctions.getSettingsData();
 })
 .then(() => {
   if (Gpio.accessible) {
     fertilizePin = new Gpio(data.settings.fertilizePin, 'out');
     heaterPin = new Gpio(data.settings.heaterPin, 'out');
+    //Release GPIO pins on process interuption.
+    process.on('SIGINT', () => {
+      fertilizePin.unexport();
+      heaterPin.unexport();
+    });
   } else {
       console.log('Virtual fertilizer now uses value: ' + data.fertilizePin);
       console.log('Virtual heater now uses value: ' + data.heaterPin);
   }
 })
 .then(() => {
-  sprinkler1 = new sprinkler.CreateSprinkler('sprinkler1', data.sprinkler1Pin, fertilizePin, heaterPin);
-  sprinkler2 = new sprinkler.CreateSprinkler('sprinkler2', data.sprinkler2Pin, fertilizePin, heaterPin);
-  sprinkler3 = new sprinkler.CreateSprinkler('sprinkler3', data.sprinkler3Pin, fertilizePin, heaterPin);
-  sprinkler4 = new sprinkler.CreateSprinkler('sprinkler4', data.sprinkler4Pin, fertilizePin, heaterPin);
+  sprinkler1 = new Sprinkler('sprinkler1', data.sprinkler1Pin, fertilizePin, heaterPin);
+  sprinkler2 = new Sprinkler('sprinkler2', data.sprinkler2Pin, fertilizePin, heaterPin);
+  sprinkler3 = new Sprinkler('sprinkler3', data.sprinkler3Pin, fertilizePin, heaterPin);
+  sprinkler4 = new Sprinkler('sprinkler4', data.sprinkler4Pin, fertilizePin, heaterPin);
 
   sprinkler1.commitAllTimers();
   sprinkler2.commitAllTimers();
@@ -131,7 +135,7 @@ app.use('/temperature3', temperature3Router);
 app.use('/sprinkler4', sprinkler4Router);
 app.use('/temperature4', temperature4Router);
 //Settings
-app.use('/settings', settingsRouter)
+app.use('/settings', settingsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -142,8 +146,8 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   if(err.message == "Not Found"){
-    res.locals.message = "Error 404, page not found."
-    res.locals.subMessage= "Perhaps you were looking for something else?"
+    res.locals.message = "Error 404, page not found.";
+    res.locals.subMessage= "Perhaps you were looking for something else?";
   }
   else
     res.locals.message = err.message;

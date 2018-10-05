@@ -1,7 +1,7 @@
 var weather = require('weather-js');
 var settings = require('../settings');
 
-getWeather = function(callback){
+function getWeather(callback){
 
   //Prepare date/time for document
   var content = settings.settingsFunctions.getSettingsData();

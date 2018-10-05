@@ -75,15 +75,6 @@ var defaultContent = {
   }
 }
 
-if(db.getState() == 'undefined'){
-  db.defaults(defaultContent).write();
-}
-
-// if(!db.has("settings").value())
-// {
-//   db.set("settings", defaultContent).write();
-// }
-
 settingsFunctions = {
 
   getSettingsData: function(){

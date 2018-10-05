@@ -1,11 +1,23 @@
 extends layout
 include ./timerTable.pug
 
-block content
+block content  
+  - var value = sprinkler.name.slice(9);
+  - var name;
+  case value
+    when "1"
+      - name = content.link2
+    when "2"
+      - name = content.link3
+    when "3"
+      - name = content.link4
+    when "4"
+      - name = content.link5
   div.container
+    h1(style="text-align: center") #[u #{name}]
     div.row
       div.col-sm(style="text-align: center")
-        h1(style="text-align: center") New Timer
+        h2(style="text-align: center") New Timer
         p 
           button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#NRInstructions" role="button" area-expanded="false" aria-controls="NRInstructions") Instructions
         div#NRInstructions.collapse
@@ -125,8 +137,8 @@ block content
             div.form-group.col-sm(style="text-align: center")
               input.sprinklerbutton.button(type='submit' value="Submit").btn
         //- hr
-      div.col-sm
-        h1(style="text-align: center") Remove Timer
+      div.col-sm(style="text-align: center")
+        h2(style="text-align: center") Remove Timer
         p 
           button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#RRInstructions" role="button" area-expanded="false" aria-controls="NRInstructions") Instructions
         div#RRInstructions.collapse
