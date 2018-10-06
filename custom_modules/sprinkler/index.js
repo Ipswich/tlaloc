@@ -14,6 +14,7 @@ var sensorIDs = ds18b20.sensors(function(err, ids) {
     console.log(err)
   }
   else
+    console.log(ids);
     return ids;
 });
 
@@ -196,17 +197,20 @@ function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
       val.wateringState = 1;
       if(Gpio.accessible && val.gpioPin != undefined) {
         val.gpioPin.writeSync(1);
+        console.log(val.name + ": Watering ON");
       }
       else {
-        console.log("Virtual " + val.name + ": Watering ON")
+        console.log("Virtual " + val.name + ": Watering ON");
       }
     }
 
     //Function for turning off watering
     Sprinkler.prototype.offWatering = function(val){
+      console.log(val);
       val.wateringState = 0;
       if(Gpio.accessible && val.gpioPin != undefined) {
         val.gpioPin.writeSync(0);
+        console.log(val.name + ": Watering OFF");
       }
       else {
         console.log("Virtual " + val.name + ": Watering OFF")
@@ -219,6 +223,7 @@ function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
         val.gpioPin.writeSync(1);
         val.fertilizePin.writeSync(1);
         val.fertilizeState = 1;
+        console.log(val.name + ": Fertilize ON");
       }
       else {
         console.log("Virtual " + val.name + ": Fertilize ON")
@@ -231,6 +236,7 @@ function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
         val.gpioPin.writeSync(0);
         val.fertilizePin.writeSync(0);
         val.fertilizeState = 0;
+        console.log(val.name + ": Fertilize OFF");
       }
       else {
         console.log("Virtual " + val.name + ": Fertilize OFF")
@@ -241,9 +247,10 @@ function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
     Sprinkler.prototype.onCooling = function(){
       if(Gpio.accessible && this.gpioPin != undefined) {
         this.gpioPin.writeSync(1);
+        console.log(this.name + ": Cooling ON");
       }
       else {
-        // console.log("Virtual " + this.name + ": Cooling ON")
+        console.log("Virtual " + this.name + ": Cooling ON")
       }
     }
 
@@ -251,9 +258,10 @@ function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
     Sprinkler.prototype.offCooling = function(){
       if(Gpio.accessible && this.gpioPin != undefined) {
         this.gpioPin.writeSync(0);
+        console.log(this.name + ": Cooling OFF");
       }
       else {
-        // console.log("Virtual " + this.name + ": Cooling OFF")
+        console.log("Virtual " + this.name + ": Cooling OFF")
       }
     }
 
@@ -261,9 +269,10 @@ function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
     Sprinkler.prototype.onHeating = function(){
       if(Gpio.accessible && this.heaterPin != undefined) {
         this.heaterPin.writeSync(1);
+        console.log(this.name + ": Heating ON")
       }
       else {
-        // console.log("Virtual " + this.name + ": Heating ON")
+        console.log("Virtual " + this.name + ": Heating ON")
       }
     }
 
@@ -271,9 +280,10 @@ function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
     Sprinkler.prototype.offHeating = function(){
       if(Gpio.accessible && this.heaterPin != undefined) {
         this.heaterPin.writeSync(0);
+        console.log(this.name + ": Heating OFF")
       }
       else {
-        // console.log("Virtual " + this.name + ": Heating OFF")
+        console.log("Virtual " + this.name + ": Heating OFF")
       }
     }
 

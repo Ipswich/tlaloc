@@ -23,21 +23,27 @@
     "toggles": {
       "sprinkler1watering": true,
       "sprinkler1temperature": true,
-      "sprinkler2watering": true,
-      "sprinkler2temperature": true,
-      "sprinkler3watering": true,
-      "sprinkler3temperature": true,
-      "sprinkler4watering": true,
-      "sprinkler4temperature": true
+      "sprinkler2watering": false,
+      "sprinkler2temperature": false,
+      "sprinkler3watering": false,
+      "sprinkler3temperature": false,
+      "sprinkler4watering": false,
+      "sprinkler4temperature": false
     }
   },
-  "sprinkler1": [],
+  "sprinkler1": [
+    {
+      "startTime": "* * * * * *",
+      "stopTime": "0 0 0 * * *",
+      "fertilizeState": false
+    }
+  ],
   "sprinkler1CoolTemp": {
     "coolTemp": 85,
     "state": false
   },
   "sprinkler1HeatTemp": {
-    "heatTemp": 65,
+    "heatTemp": 81,
     "state": false
   },
   "sprinkler2": [],

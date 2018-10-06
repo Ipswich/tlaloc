@@ -72,12 +72,13 @@ new Promise((resolve, reject) => {
 })
 .then(() => {
   data = settings.settingsFunctions.getSettingsData();
+  console.log(data);
+  return data;
 })
-.then(() => {
+.then((data) => {
   if (Gpio.accessible) {
-    console.log(data.settings.fertilizePin);
-    fertilizePin = new Gpio(data.settings.fertilizePin, 'out');
-    heaterPin = new Gpio(data.settings.heaterPin, 'out');
+    fertilizePin = new Gpio(data.fertilizePin, 'out');
+    heaterPin = new Gpio(data.heaterPin, 'out');
     //Release GPIO pins on process interuption.
     process.on('SIGINT', () => {
       fertilizePin.unexport();
@@ -87,6 +88,7 @@ new Promise((resolve, reject) => {
       console.log('Virtual fertilizer now uses value: ' + data.fertilizePin);
       console.log('Virtual heater now uses value: ' + data.heaterPin);
   }
+  return;
 })
 .then(() => {
   sprinkler1 = new Sprinkler('sprinkler1', data.sprinkler1Pin, fertilizePin, heaterPin);
@@ -98,6 +100,7 @@ new Promise((resolve, reject) => {
   sprinkler2.commitAllTimers();
   sprinkler3.commitAllTimers();
   sprinkler4.commitAllTimers();
+  return;
 })
 .then(() => {
   app.set('fertilizePin', fertilizePin);
@@ -106,6 +109,7 @@ new Promise((resolve, reject) => {
   app.set('sprinkler2', sprinkler2);
   app.set('sprinkler3', sprinkler3);
   app.set('sprinkler4', sprinkler4);
+  return;
 });
 
 // View engine setup

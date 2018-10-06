@@ -37,9 +37,9 @@ router.post('/', function(req, res, next) {
     settings.settingsFunctions.setsprinkler1watering(true);
   }
   else{
-    sprinkler1.offWatering();
+    sprinkler1.offWatering(this);
     if(sprinkler1.fertilizeState == 1){
-      sprinkler1.offFertilize();
+      sprinkler1.offFertilize(this);
     }
     sprinkler1.cancelAllTimers();
     settings.settingsFunctions.setsprinkler1watering(false);
@@ -70,9 +70,9 @@ router.post('/', function(req, res, next) {
     settings.settingsFunctions.setsprinkler2watering(true)
   }
   else{
-    sprinkler2.offWatering();
+    sprinkler2.offWatering(this);
     if(sprinkler2.fertilizeState == 1){
-      sprinkler2.offFertilize();
+      sprinkler2.offFertilize(this);
     }
     sprinkler2.cancelAllTimers();
     settings.settingsFunctions.setsprinkler2watering(false)
@@ -103,9 +103,9 @@ router.post('/', function(req, res, next) {
     settings.settingsFunctions.setsprinkler3watering(true)
   }
   else{
-    sprinkler3.offWatering();
+    sprinkler3.offWatering(this);
     if(sprinkler3.fertilizeState == 1){
-      sprinkler3.offFertilize();
+      sprinkler3.offFertilize(this);
     }
     sprinkler3.cancelAllTimers();
     settings.settingsFunctions.setsprinkler3watering(false)
@@ -136,9 +136,9 @@ router.post('/', function(req, res, next) {
     settings.settingsFunctions.setsprinkler4watering(true)
   }
   else{
-    sprinkler4.offWatering();
+    sprinkler4.offWatering(this);
     if(sprinkler4.fertilizeState == 1){
-      sprinkler4.offFertilize();
+      sprinkler4.offFertilize(this);
     }
     sprinkler4.cancelAllTimers();
     settings.settingsFunctions.setsprinkler4watering(false)

@@ -33,7 +33,6 @@ router.get('/', function(req, res, next) {
       content.sprinkler3.temperatureState = sprinkler3.getTemperatureState();
       content.sprinkler4.temperatureState = sprinkler4.getTemperatureState();
 
-      console.log(content);
       res.render('./index', content);
     }
   });
