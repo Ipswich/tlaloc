@@ -75,6 +75,7 @@ new Promise((resolve, reject) => {
 })
 .then(() => {
   if (Gpio.accessible) {
+    console.log(data.settings.fertilizePin);
     fertilizePin = new Gpio(data.settings.fertilizePin, 'out');
     heaterPin = new Gpio(data.settings.heaterPin, 'out');
     //Release GPIO pins on process interuption.
