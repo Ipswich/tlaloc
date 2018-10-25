@@ -7,8 +7,9 @@ const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('db.json');
 const db = low(adapter);
-var Gpio = require('onoff').Gpio;
 const exec = require('child_process').exec;
+const five = require('johnny-five');
+
 
 //Custom Modules
 var getweather = require('./custom_modules/getweather');
@@ -44,24 +45,18 @@ var sprinkler2;
 var sprinkler3;
 var sprinkler4;
 
-//Load settings data
-//OneWire Sensor Setup (load LKMs for thermoprobe)
-console.log("Loading onewire drivers...");
-exec('sh ./bin/modules.sh', (error, stdout, stderr) =>{
-  if(error != null){
-    console.log("An error has occurred, please load onewire drivers manually (tlaloc/bin/modules.sh)");
-    console.log(error);
-    process.exit(0);
-  }
-  else {
-    console.log("Onewire drivers loaded successfully.");
-  }
-});
+//Create arduino board object.
+var arduino = new five.Board({repl: false});
+app.set('arduino', arduino);
+var heaterRelay;
+var fertilizeRelay;
+var thermometer;
 
-//Promise for DB creation
+//Promise for app initilization
 new Promise((resolve, reject) => {
   //Check if JSON file has been created/initialized, if not create file and/or set defaults
   if(!db.has("settings").value()){
+    console.log("No database file/data detected, creating file with defaults. . .")
     db.defaults(settings.defaultContent).write();
     db.read();
   }
@@ -72,44 +67,76 @@ new Promise((resolve, reject) => {
 })
 .then(() => {
   data = settings.settingsFunctions.getSettingsData();
-  console.log(data);
   return data;
 })
 .then((data) => {
-  if (Gpio.accessible) {
-    fertilizePin = new Gpio(data.fertilizePin, 'out');
-    heaterPin = new Gpio(data.heaterPin, 'out');
-    //Release GPIO pins on process interuption.
-    process.on('SIGINT', () => {
-      fertilizePin.unexport();
-      heaterPin.unexport();
+  //Setup arduino board
+  arduino.on("ready", function(){
+    console.log("Arduino has connected successfully.\n");
+    fertilizeRelay = new five.Relay(data.fertilizePin);
+    heaterRelay = new five.Relay(data.heaterPin);
+    thermometer = new five.Thermometer({
+      controller: "DS18B20",
+      pin: data.thermometerPin
     });
-  } else {
-      console.log('Virtual fertilizer now uses value: ' + data.fertilizePin);
-      console.log('Virtual heater now uses value: ' + data.heaterPin);
-  }
+    console.log('Thermometer uses Arduino pin: ' + data.thermometerPin);
+    console.log('Fertilizer uses Arduino pin: ' + data.fertilizePin);
+    console.log('Heater uses Arduino pin: ' + data.heaterPin);
+    app.set('thermometer', thermometer);
+    this.on("exit", function(){
+        //Exit cleanup
+    });
+  });
   return;
 })
 .then(() => {
-  sprinkler1 = new Sprinkler('sprinkler1', data.sprinkler1Pin, fertilizePin, heaterPin);
-  sprinkler2 = new Sprinkler('sprinkler2', data.sprinkler2Pin, fertilizePin, heaterPin);
-  sprinkler3 = new Sprinkler('sprinkler3', data.sprinkler3Pin, fertilizePin, heaterPin);
-  sprinkler4 = new Sprinkler('sprinkler4', data.sprinkler4Pin, fertilizePin, heaterPin);
+  arduino.on("ready", function(){
+    sprinkler1 = new Sprinkler('sprinkler1', data.sprinkler1Pin, fertilizeRelay, heaterRelay, arduino, thermometer);
+    sprinkler2 = new Sprinkler('sprinkler2', data.sprinkler2Pin, fertilizeRelay, heaterRelay, arduino, thermometer);
+    sprinkler3 = new Sprinkler('sprinkler3', data.sprinkler3Pin, fertilizeRelay, heaterRelay, arduino, thermometer);
+    sprinkler4 = new Sprinkler('sprinkler4', data.sprinkler4Pin, fertilizeRelay, heaterRelay, arduino, thermometer);
+    sprinkler1.commitAllTimers();
+    sprinkler2.commitAllTimers();
+    sprinkler3.commitAllTimers();
+    sprinkler4.commitAllTimers();
+  });
 
-  sprinkler1.commitAllTimers();
-  sprinkler2.commitAllTimers();
-  sprinkler3.commitAllTimers();
-  sprinkler4.commitAllTimers();
+}).then(() => {
+  //Initialize Check for Heat/cool tasks
+  arduino.on("ready", function(){
+    thermometer.on("change", function(){
+      if(data.degreeType == "C"){
+        sprinkler1.temperatureHeatTask(this.C);
+        sprinkler2.temperatureHeatTask(this.C);
+        sprinkler3.temperatureHeatTask(this.C);
+        sprinkler4.temperatureHeatTask(this.C);
+        sprinkler1.temperatureCoolTask(this.C);
+        sprinkler2.temperatureCoolTask(this.C);
+        sprinkler3.temperatureCoolTask(this.C);
+        sprinkler4.temperatureCoolTask(this.C);
+      }
+      sprinkler1.temperatureHeatTask(this.F);
+      sprinkler2.temperatureHeatTask(this.F);
+      sprinkler3.temperatureHeatTask(this.F);
+      sprinkler4.temperatureHeatTask(this.F);
+      sprinkler1.temperatureCoolTask(this.F);
+      sprinkler2.temperatureCoolTask(this.F);
+      sprinkler3.temperatureCoolTask(this.F);
+      sprinkler4.temperatureCoolTask(this.F);
+    });
+  });
   return;
 })
 .then(() => {
-  app.set('fertilizePin', fertilizePin);
-  app.set('heaterPin', heaterPin);
-  app.set('sprinkler1', sprinkler1);
-  app.set('sprinkler2', sprinkler2);
-  app.set('sprinkler3', sprinkler3);
-  app.set('sprinkler4', sprinkler4);
-  return;
+  arduino.on("ready", function(){
+    app.set('fertilizePin', fertilizePin);
+    app.set('heaterPin', heaterPin);
+    app.set('sprinkler1', sprinkler1);
+    app.set('sprinkler2', sprinkler2);
+    app.set('sprinkler3', sprinkler3);
+    app.set('sprinkler4', sprinkler4);
+    return;
+  })
 });
 
 // View engine setup

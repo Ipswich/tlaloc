@@ -1,27 +1,33 @@
 var express = require('express');
 var router = express.Router();
 var getweather = require('../custom_modules/getweather');
-var settings = require('../custom_modules/settings')
+var settings = require('../custom_modules/settings');
+var five = require('johnny-five');
+
+var temperature;
 
 router.get('/', function(req, res, next) {
   getweather.getWeather(function(err, content){
     if (err) console.log(err);
     else {
-
-      sprinkler1 = req.app.get("sprinkler1")
-      sprinkler2 = req.app.get("sprinkler2")
-      sprinkler3 = req.app.get("sprinkler3")
-      sprinkler4 = req.app.get("sprinkler4")
-
+      var sprinkler1 = req.app.get("sprinkler1");
+      var sprinkler2 = req.app.get("sprinkler2");
+      var sprinkler3 = req.app.get("sprinkler3");
+      var sprinkler4 = req.app.get("sprinkler4");
+      var thermometer = req.app.get("thermometer");
+      if (content.degreeType == 'F')
+        temperature = thermometer.F + " F";
+      else
+        temperature = thermometer.C + " C";
       content.sprinkler1 = {}
       content.sprinkler2 = {}
       content.sprinkler3 = {}
       content.sprinkler4 = {}
 
-      content.sprinkler1.currentTemperature = sprinkler1.getTemperatureFromProbe();
-      content.sprinkler2.currentTemperature = sprinkler2.getTemperatureFromProbe();
-      content.sprinkler3.currentTemperature = sprinkler3.getTemperatureFromProbe();
-      content.sprinkler4.currentTemperature = sprinkler4.getTemperatureFromProbe();
+      content.sprinkler1.currentTemperature = temperature;
+      content.sprinkler2.currentTemperature = temperature;
+      content.sprinkler3.currentTemperature = temperature;
+      content.sprinkler4.currentTemperature = temperature;
 
       content.sprinkler1.wateringState = sprinkler1.getWateringState();
       content.sprinkler2.wateringState = sprinkler2.getWateringState();

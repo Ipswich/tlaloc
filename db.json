@@ -2,12 +2,13 @@
   "settings": {
     "location": "Salem, OR",
     "degreeType": "F",
-    "sprinkler1Pin": 5,
-    "sprinkler2Pin": 6,
-    "sprinkler3Pin": 13,
-    "sprinkler4Pin": 19,
-    "fertilizePin": 26,
-    "heaterPin": 12,
+    "sprinkler1Pin": 13,
+    "sprinkler2Pin": 1,
+    "sprinkler3Pin": 2,
+    "sprinkler4Pin": 3,
+    "fertilizePin": 4,
+    "heaterPin": 5,
+    "thermometerPin": 6,
     "content": {
       "sidebarTitle": "Tlaloc",
       "sidebarHeading": "Sprinkler Controller",
@@ -23,27 +24,21 @@
     "toggles": {
       "sprinkler1watering": true,
       "sprinkler1temperature": true,
-      "sprinkler2watering": false,
-      "sprinkler2temperature": false,
-      "sprinkler3watering": false,
-      "sprinkler3temperature": false,
-      "sprinkler4watering": false,
-      "sprinkler4temperature": false
+      "sprinkler2watering": true,
+      "sprinkler2temperature": true,
+      "sprinkler3watering": true,
+      "sprinkler3temperature": true,
+      "sprinkler4watering": true,
+      "sprinkler4temperature": true
     }
   },
-  "sprinkler1": [
-    {
-      "startTime": "* * * * * *",
-      "stopTime": "0 0 0 * * *",
-      "fertilizeState": false
-    }
-  ],
+  "sprinkler1": [],
   "sprinkler1CoolTemp": {
-    "coolTemp": 85,
-    "state": false
+    "coolTemp": "85",
+    "state": true
   },
   "sprinkler1HeatTemp": {
-    "heatTemp": 81,
+    "heatTemp": "65",
     "state": false
   },
   "sprinkler2": [],

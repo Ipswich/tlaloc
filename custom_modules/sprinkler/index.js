@@ -4,19 +4,10 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('db.json');
 const db = low(adapter);
 const settings = require('../settings')
+const five = require('johnny-five');
+
+//depricated
 const Gpio = require('onoff').Gpio
-const ds18b20 = require('ds18b20');
-
-
-//Load sensor IDs into array for access
-var sensorIDs = ds18b20.sensors(function(err, ids) {
-  if (err){
-    console.log(err)
-  }
-  else
-    console.log(ids);
-    return ids;
-});
 
 //Parses input into string for timers
 function inputParser(minute, hour, dayOfMonth, month, dayOfWeek){
@@ -24,29 +15,18 @@ function inputParser(minute, hour, dayOfMonth, month, dayOfWeek){
   return outputString;
 }
 
-function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
-    this.name = name;
-    this.timerObjects = [];
-    this.fertilizePin = fertilizePin;
-    this.heaterPin = heaterPin;
-    this.wateringState = 0;
-    this.fertilizeState = 0;
-    this.temperatureState = "Off";
-    //Set Pin if GPIO hardware exists
-    if (Gpio.accessible) {
-      this.gpioPin = new Gpio(gpioPin, 'out')
-      process.on('SIGINT', () => {
-        this.gpioPin.unexport();
-      })
-    } else {
-        console.log('Virtual sprinkler now uses value: ' +  gpioPin);
-    }
+function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, arduino, thermometer){
+  this.name = name;
+  this.timerObjects = [];
+  this.fertilizeRelay = fertilizeRelay;
+  this.heaterRelay = heaterRelay;
+  this.wateringState = 0;
+  this.fertilizeState = 0;
+  this.temperatureState = "Off";
+  this.thermometer = thermometer;
+  this.sprinklerRelay = new five.Relay(sprinklerRelay);
 
-    //Check temperature every 5 seconds to evaluate heating and cooling states.
-    setInterval(() => {
-      this.temperatureHeatTask(null);
-      this.temperatureCoolTask(null);
-    }, 5000);
+  console.log(this.name + ' uses Arduino pin: ' +  sprinklerRelay);
 }
     //////////////////////////
     //LOW DB STORAGE METHODS//
@@ -195,96 +175,58 @@ function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
     //Function for turning on watering
     Sprinkler.prototype.onWatering = function(val){
       val.wateringState = 1;
-      if(Gpio.accessible && val.gpioPin != undefined) {
-        val.gpioPin.writeSync(1);
-        console.log(val.name + ": Watering ON");
-      }
-      else {
-        console.log("Virtual " + val.name + ": Watering ON");
-      }
+      val.sprinklerRelay.on();
+      console.log(val.name + ": Watering ON");
     }
 
     //Function for turning off watering
     Sprinkler.prototype.offWatering = function(val){
       console.log(val);
       val.wateringState = 0;
-      if(Gpio.accessible && val.gpioPin != undefined) {
-        val.gpioPin.writeSync(0);
-        console.log(val.name + ": Watering OFF");
-      }
-      else {
-        console.log("Virtual " + val.name + ": Watering OFF")
-      }
+      val.sprinklerRelay.off();
+      console.log(val.name + ": Watering OFF");
     }
 
     //Function for turning on fertilizer
     Sprinkler.prototype.onFertilize = function(val){
-      if(Gpio.accessible && val.gpioPin != undefined) {
-        val.gpioPin.writeSync(1);
-        val.fertilizePin.writeSync(1);
-        val.fertilizeState = 1;
-        console.log(val.name + ": Fertilize ON");
-      }
-      else {
-        console.log("Virtual " + val.name + ": Fertilize ON")
-      }
+      // console.log(val.fertilizeRelay);
+      val.sprinklerRelay.on();
+      val.fertilizeState = 1;
+      val.fertilizeRelay.on();
+      console.log(val.name + ": Fertilize ON");
     }
 
       //Function for turning off fertilizer
     Sprinkler.prototype.offFertilize = function(val){
-      if(Gpio.accessible && val.gpioPin != undefined) {
-        val.gpioPin.writeSync(0);
-        val.fertilizePin.writeSync(0);
-        val.fertilizeState = 0;
-        console.log(val.name + ": Fertilize OFF");
-      }
-      else {
-        console.log("Virtual " + val.name + ": Fertilize OFF")
-      }
+      val.sprinklerRelay.off();
+      val.fertilizeState = 0;
+      val.fertilizeRelay.off();
+      console.log(val.name + ": Fertilize OFF");
     }
 
     //Function for turning on cooling by sprinklers (Should not override watering)
     Sprinkler.prototype.onCooling = function(){
-      if(Gpio.accessible && this.gpioPin != undefined) {
-        this.gpioPin.writeSync(1);
-        console.log(this.name + ": Cooling ON");
-      }
-      else {
-        console.log("Virtual " + this.name + ": Cooling ON")
-      }
+      this.sprinklerRelay.on();
+      // console.log(this.name + ": Cooling ON");
     }
 
     //Function for turning off cooling by sprinklers (Should not override watering)
     Sprinkler.prototype.offCooling = function(){
-      if(Gpio.accessible && this.gpioPin != undefined) {
-        this.gpioPin.writeSync(0);
-        console.log(this.name + ": Cooling OFF");
-      }
-      else {
-        console.log("Virtual " + this.name + ": Cooling OFF")
-      }
+      this.sprinklerRelay.off();
+      // console.log(this.name + ": Cooling OFF");
     }
 
     //Function for turning on heater
     Sprinkler.prototype.onHeating = function(){
-      if(Gpio.accessible && this.heaterPin != undefined) {
-        this.heaterPin.writeSync(1);
-        console.log(this.name + ": Heating ON")
-      }
-      else {
-        console.log("Virtual " + this.name + ": Heating ON")
-      }
+      this.fertilizeRelay.on();
+      // console.log(this.name + ": Heating ON");
     }
 
     //Function for turning on heater
     Sprinkler.prototype.offHeating = function(){
-      if(Gpio.accessible && this.heaterPin != undefined) {
-        this.heaterPin.writeSync(0);
-        console.log(this.name + ": Heating OFF")
-      }
-      else {
-        console.log("Virtual " + this.name + ": Heating OFF")
-      }
+        this.fertilizeRelay.off();
+        // console.log(this.name + ": Heating OFF");
+
     }
 
 
@@ -293,57 +235,42 @@ function Sprinkler(name, gpioPin, fertilizePin, heaterPin){
     ////////////////////////////
     //Get temperature data from probe, returns temperature based on degreeType specified in the settings file.
     Sprinkler.prototype.getTemperatureFromProbe = function(){
-      if (sensorIDs != undefined){
-        ds18b20.temperature(sensorIDs[0], function(err, value){
-          if (err)
-            return err;
-          else if (settings.degreeType == "F")
-            return value;
-          else
-            return ((value - 32) * (5/9));
-        });
+      if (settings.degreeType = 'F'){
+        return this.thermometer.F;
       }
-      else return "80"
+      else {
+        return this.thermometer.C;
+      }
     }
 
 
       /*Checks whether or not cooling should be turned on or off.
       Looks at if the control is enabled, if temperature meets cutoff, and if cooling is turned on.*/
-      Sprinkler.prototype.temperatureCoolTask = function(err){
+      Sprinkler.prototype.temperatureCoolTask = function(probeTemp){
       var data = this.getCoolTemperature();
-      var probeTemp = this.getTemperatureFromProbe();
       var enableState = this.getTemperatureEnableState();
-      if (err)
-        console.log(this.name + " ERROR: Cool task failed.");
-      else {
-        if (data.state == true && enableState == true && parseInt(probeTemp) >= parseInt(data.coolTemp)){
-          this.temperatureState = "Cooling"
-          this.onCooling();
-        }
-        if ((this.wateringState == 0 && probeTemp < data.coolTemp) || (this.wateringState == 0 && data.state == false) || (enableState == false)){
-          this.temperatureState = "Off"
-          this.offCooling();
-        }
+      if (data.state == true && enableState == true && parseInt(probeTemp) >= parseInt(data.coolTemp)){
+        this.temperatureState = "Cooling"
+        this.onCooling();
+      }
+      if ((this.wateringState == 0 && probeTemp < data.coolTemp) || (this.wateringState == 0 && data.state == false) || (enableState == false)){
+        this.temperatureState = "Off"
+        this.offCooling();
       }
     }
 
     /*Checks whether or not heating should be turned on or off. Looks at on/off state of the zone as well.
     Looks at if the control is enabled, if temperature meets cutoff, and if cooling is turned on.*/
-    Sprinkler.prototype.temperatureHeatTask = function(err){
+    Sprinkler.prototype.temperatureHeatTask = function(probeTemp){
       var data = this.getHeatTemperature();
-      var probeTemp = this.getTemperatureFromProbe();
       var enableState = this.getTemperatureEnableState();
-      if (err)
-        console.log(this.name + " ERROR: Heat task failed.");
-      else {
-        if (data.state == true && enableState == true && parseInt(probeTemp) <= parseInt(data.heatTemp)){
-          this.temperatureState = "Heating"
-          this.onHeating();
-        }
-        if ((probeTemp > data.heatTemp) || (data.state == false) || (enableState == false)) {
-          this.temperatureState = "Off"
-          this.offHeating();
-        }
+      if (data.state == true && enableState == true && parseInt(probeTemp) <= parseInt(data.heatTemp)){
+        this.temperatureState = "Heating"
+        this.onHeating();
+      }
+      if ((probeTemp > data.heatTemp) || (data.state == false) || (enableState == false)) {
+        this.temperatureState = "Off"
+        this.offHeating();
       }
     }
 
