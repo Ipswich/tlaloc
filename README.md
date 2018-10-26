@@ -2,7 +2,7 @@
 
 tlaloc is a Raspberry Pi/Arduino driven sprinkler application based on the node.js framework.
 ### Key features include:
-+ CRON based watering scheduling with option for fertilize.
++ CRON based sprinkler scheduling with option for fertilize.
 + Temperature controlled heating and cooling
 + Easy customization for administering varied zones
 + An easy to use web interface for at-home or VPN control.
