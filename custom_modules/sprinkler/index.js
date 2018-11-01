@@ -181,7 +181,7 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, arduino, t
 
     //Function for turning off watering
     Sprinkler.prototype.offWatering = function(val){
-      console.log(val);
+      console.log("HERE" + val)
       val.wateringState = 0;
       val.sprinklerRelay.off();
       console.log(val.name + ": Watering OFF");

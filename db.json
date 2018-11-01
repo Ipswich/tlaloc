@@ -1,7 +1,7 @@
 {
   "settings": {
     "location": "Salem, OR",
-    "degreeType": "F",
+    "degreeType": "C",
     "sprinkler1Pin": 13,
     "sprinkler2Pin": 1,
     "sprinkler3Pin": 2,
