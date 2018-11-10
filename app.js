@@ -33,6 +33,9 @@ var temperature4Router = require('./routes/temperature4')
 
 var settingsRouter = require('./routes/settings');
 
+//API Router
+var APIRouter = require('./routes/state');
+
 //Create App
 var app = express();
 
@@ -102,6 +105,7 @@ new Promise((resolve, reject) => {
   });
 
 }).then(() => {
+
   //Initialize Check for Heat/cool tasks
   arduino.on("ready", function(){
     thermometer.on("change", function(){
@@ -168,6 +172,8 @@ app.use('/sprinkler4', sprinkler4Router);
 app.use('/temperature4', temperature4Router);
 //Settings
 app.use('/settings', settingsRouter);
+//API Route
+app.use('/state', APIRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,14 +1,14 @@
 {
   "settings": {
     "location": "Salem, OR",
-    "degreeType": "C",
-    "sprinkler1Pin": 13,
-    "sprinkler2Pin": 1,
-    "sprinkler3Pin": 2,
-    "sprinkler4Pin": 3,
-    "fertilizePin": 4,
-    "heaterPin": 5,
-    "thermometerPin": 6,
+    "degreeType": "F",
+    "sprinkler1Pin": 5,
+    "sprinkler2Pin": 6,
+    "sprinkler3Pin": 7,
+    "sprinkler4Pin": 8,
+    "fertilizePin": 9,
+    "heaterPin": 10,
+    "thermometerPin": 11,
     "content": {
       "sidebarTitle": "Tlaloc",
       "sidebarHeading": "Sprinkler Controller",
@@ -34,12 +34,12 @@
   },
   "sprinkler1": [],
   "sprinkler1CoolTemp": {
-    "coolTemp": "85",
+    "coolTemp": "100",
     "state": true
   },
   "sprinkler1HeatTemp": {
-    "heatTemp": "65",
-    "state": false
+    "heatTemp": "72",
+    "state": true
   },
   "sprinkler2": [],
   "sprinkler2CoolTemp": {

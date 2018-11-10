@@ -7,13 +7,13 @@ var defaultContent = {
   settings: {
     location: "Salem, OR",
     degreeType: "F",
-    sprinkler1Pin: 0,
-    sprinkler2Pin: 1,
-    sprinkler3Pin: 2,
-    sprinkler4Pin: 3,
-    fertilizePin: 4,
-    heaterPin: 5,
-    thermometerPin: 6,
+    sprinkler1Pin: 5,
+    sprinkler2Pin: 6,
+    sprinkler3Pin: 7,
+    sprinkler4Pin: 8,
+    fertilizePin: 9,
+    heaterPin: 10,
+    thermometerPin: 11,
     //WEBSITE DATA
     content: {
       sidebarTitle: "Tlaloc",

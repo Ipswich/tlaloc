@@ -218,14 +218,14 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, arduino, t
 
     //Function for turning on heater
     Sprinkler.prototype.onHeating = function(){
-      this.fertilizeRelay.on();
-      // console.log(this.name + ": Heating ON");
+      this.heaterRelay.on();
+      console.log(this.name + ": Heating ON");
     }
 
     //Function for turning on heater
     Sprinkler.prototype.offHeating = function(){
         this.fertilizeRelay.off();
-        // console.log(this.name + ": Heating OFF");
+        console.log(this.name + ": Heating OFF");
 
     }
 
