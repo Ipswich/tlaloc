@@ -6,9 +6,10 @@
     "sprinkler2Pin": 6,
     "sprinkler3Pin": 7,
     "sprinkler4Pin": 8,
-    "fertilizePin": 9,
+    "coolerPin": 9,
     "heaterPin": 10,
     "thermometerPin": 11,
+    "fertilizePin": 12,
     "content": {
       "sidebarTitle": "Tlaloc",
       "sidebarHeading": "Sprinkler Controller",
@@ -34,12 +35,12 @@
   },
   "sprinkler1": [],
   "sprinkler1CoolTemp": {
-    "coolTemp": "100",
+    "coolTemp": "65",
     "state": true
   },
   "sprinkler1HeatTemp": {
-    "heatTemp": "72",
-    "state": true
+    "heatTemp": "65",
+    "state": false
   },
   "sprinkler2": [],
   "sprinkler2CoolTemp": {

@@ -30,9 +30,8 @@ var temperature3Router = require('./routes/temperature3')
 //Sprinkler4
 var sprinkler4Router = require('./routes/sprinkler4');
 var temperature4Router = require('./routes/temperature4')
-
+//Settings
 var settingsRouter = require('./routes/settings');
-
 //API Router
 var APIRouter = require('./routes/state');
 
@@ -52,6 +51,7 @@ var sprinkler4;
 var arduino = new five.Board({repl: false});
 app.set('arduino', arduino);
 var heaterRelay;
+var coolerRelay;
 var fertilizeRelay;
 var thermometer;
 
@@ -78,6 +78,7 @@ new Promise((resolve, reject) => {
     console.log("Arduino has connected successfully.\n");
     fertilizeRelay = new five.Relay(data.fertilizePin);
     heaterRelay = new five.Relay(data.heaterPin);
+    coolerRelay = new five.Relay(data.coolerPin);
     thermometer = new five.Thermometer({
       controller: "DS18B20",
       pin: data.thermometerPin
@@ -85,6 +86,7 @@ new Promise((resolve, reject) => {
     console.log('Thermometer uses Arduino pin: ' + data.thermometerPin);
     console.log('Fertilizer uses Arduino pin: ' + data.fertilizePin);
     console.log('Heater uses Arduino pin: ' + data.heaterPin);
+    console.log('Cooler uses Arduino pin: ' + data.coolerPin);
     app.set('thermometer', thermometer);
     this.on("exit", function(){
         //Exit cleanup
@@ -94,10 +96,10 @@ new Promise((resolve, reject) => {
 })
 .then(() => {
   arduino.on("ready", function(){
-    sprinkler1 = new Sprinkler('sprinkler1', data.sprinkler1Pin, fertilizeRelay, heaterRelay, arduino, thermometer);
-    sprinkler2 = new Sprinkler('sprinkler2', data.sprinkler2Pin, fertilizeRelay, heaterRelay, arduino, thermometer);
-    sprinkler3 = new Sprinkler('sprinkler3', data.sprinkler3Pin, fertilizeRelay, heaterRelay, arduino, thermometer);
-    sprinkler4 = new Sprinkler('sprinkler4', data.sprinkler4Pin, fertilizeRelay, heaterRelay, arduino, thermometer);
+    sprinkler1 = new Sprinkler('sprinkler1', data.sprinkler1Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer);
+    sprinkler2 = new Sprinkler('sprinkler2', data.sprinkler2Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer);
+    sprinkler3 = new Sprinkler('sprinkler3', data.sprinkler3Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer);
+    sprinkler4 = new Sprinkler('sprinkler4', data.sprinkler4Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer);
     sprinkler1.commitAllTimers();
     sprinkler2.commitAllTimers();
     sprinkler3.commitAllTimers();
@@ -109,24 +111,25 @@ new Promise((resolve, reject) => {
   //Initialize Check for Heat/cool tasks
   arduino.on("ready", function(){
     thermometer.on("change", function(){
+
       if(data.degreeType == "C"){
-        sprinkler1.temperatureHeatTask(this.C);
-        sprinkler2.temperatureHeatTask(this.C);
-        sprinkler3.temperatureHeatTask(this.C);
-        sprinkler4.temperatureHeatTask(this.C);
-        sprinkler1.temperatureCoolTask(this.C);
-        sprinkler2.temperatureCoolTask(this.C);
-        sprinkler3.temperatureCoolTask(this.C);
-        sprinkler4.temperatureCoolTask(this.C);
+        sprinkler1.temperatureHeatTask(this.C, sprinkler1);
+        sprinkler2.temperatureHeatTask(this.C, sprinkler2);
+        sprinkler3.temperatureHeatTask(this.C, sprinkler3);
+        sprinkler4.temperatureHeatTask(this.C, sprinkler4);
+        sprinkler1.temperatureCoolTask(this.C, sprinkler1);
+        sprinkler2.temperatureCoolTask(this.C, sprinkler2);
+        sprinkler3.temperatureCoolTask(this.C, sprinkler3);
+        sprinkler4.temperatureCoolTask(this.C, sprinkler4);
       }
-      sprinkler1.temperatureHeatTask(this.F);
-      sprinkler2.temperatureHeatTask(this.F);
-      sprinkler3.temperatureHeatTask(this.F);
-      sprinkler4.temperatureHeatTask(this.F);
-      sprinkler1.temperatureCoolTask(this.F);
-      sprinkler2.temperatureCoolTask(this.F);
-      sprinkler3.temperatureCoolTask(this.F);
-      sprinkler4.temperatureCoolTask(this.F);
+      sprinkler1.temperatureHeatTask(this.F, sprinkler1);
+      sprinkler2.temperatureHeatTask(this.F, sprinkler2);
+      sprinkler3.temperatureHeatTask(this.F, sprinkler3);
+      sprinkler4.temperatureHeatTask(this.F, sprinkler4);
+      sprinkler1.temperatureCoolTask(this.F, sprinkler1);
+      sprinkler2.temperatureCoolTask(this.F, sprinkler2);
+      sprinkler3.temperatureCoolTask(this.F, sprinkler3);
+      sprinkler4.temperatureCoolTask(this.F, sprinkler4);
     });
   });
   return;
@@ -157,6 +160,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes //
 //Generic All
 app.use('/', indexRouter);
+app.use('/index', indexRouter);
 app.use('/about', aboutRouter);
 //Sprinkler1
 app.use('/sprinkler1', sprinkler1Router);

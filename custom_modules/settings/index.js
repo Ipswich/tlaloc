@@ -11,9 +11,10 @@ var defaultContent = {
     sprinkler2Pin: 6,
     sprinkler3Pin: 7,
     sprinkler4Pin: 8,
-    fertilizePin: 9,
+    coolerPin: 9,
     heaterPin: 10,
     thermometerPin: 11,
+    fertilizePin: 12,
     //WEBSITE DATA
     content: {
       sidebarTitle: "Tlaloc",

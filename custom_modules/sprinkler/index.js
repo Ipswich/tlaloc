@@ -15,14 +15,15 @@ function inputParser(minute, hour, dayOfMonth, month, dayOfWeek){
   return outputString;
 }
 
-function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, arduino, thermometer){
+function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer){
   this.name = name;
   this.timerObjects = [];
   this.fertilizeRelay = fertilizeRelay;
   this.heaterRelay = heaterRelay;
+  this.coolerRelay = coolerRelay;
   this.wateringState = 0;
   this.fertilizeState = 0;
-  this.temperatureState = "Off";
+  this.temperatureState = 0;
   this.thermometer = thermometer;
   this.sprinklerRelay = new five.Relay(sprinklerRelay);
 
@@ -153,6 +154,10 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, arduino, t
       this.wateringState = val;
     }
 
+    Sprinkler.prototype.setTemperatureState = function(val){
+      this.temperatureState = val;
+    }
+
     //Sets the threshold for turning on heating, and whether or not it is enabled.
     //Stores info in the DB
     Sprinkler.prototype.setHeatTemperature = function(value, checkbox){
@@ -181,7 +186,6 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, arduino, t
 
     //Function for turning off watering
     Sprinkler.prototype.offWatering = function(val){
-      console.log("HERE" + val)
       val.wateringState = 0;
       val.sprinklerRelay.off();
       console.log(val.name + ": Watering OFF");
@@ -206,27 +210,33 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, arduino, t
 
     //Function for turning on cooling by sprinklers (Should not override watering)
     Sprinkler.prototype.onCooling = function(){
-      this.sprinklerRelay.on();
-      // console.log(this.name + ": Cooling ON");
+      this.coolerRelay.on();
+      this.setTemperatureState(-1);
+      console.log(this.name + ": Cooling ON");
+      console.log(this.coolerRelay.isOn);
     }
 
     //Function for turning off cooling by sprinklers (Should not override watering)
     Sprinkler.prototype.offCooling = function(){
-      this.sprinklerRelay.off();
-      // console.log(this.name + ": Cooling OFF");
+      this.coolerRelay.off();
+      this.setTemperatureState(0);
+      console.log(this.name + ": Cooling OFF");
+      console.log(this.coolerRelay.isOn);
     }
 
     //Function for turning on heater
     Sprinkler.prototype.onHeating = function(){
       this.heaterRelay.on();
-      console.log(this.name + ": Heating ON");
+      this.setTemperatureState(1);
+      // console.log(this.name + ": Heating ON");
+      // console.log(this.heaterRelay.isOn);
     }
 
-    //Function for turning on heater
+    //Function for turning off heater
     Sprinkler.prototype.offHeating = function(){
-        this.fertilizeRelay.off();
-        console.log(this.name + ": Heating OFF");
-
+      this.heaterRelay.off();
+      // console.log(this.name + ": Heating OFF");
+      // console.log(this.heaterRelay.isOn);
     }
 
 
@@ -246,31 +256,36 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, arduino, t
 
       /*Checks whether or not cooling should be turned on or off.
       Looks at if the control is enabled, if temperature meets cutoff, and if cooling is turned on.*/
-      Sprinkler.prototype.temperatureCoolTask = function(probeTemp){
+      Sprinkler.prototype.temperatureCoolTask = function(probeTemp, val){
       var data = this.getCoolTemperature();
       var enableState = this.getTemperatureEnableState();
+      console.log(this.name);
+      console.log(data);
+      console.log(enableState);
       if (data.state == true && enableState == true && parseInt(probeTemp) >= parseInt(data.coolTemp)){
-        this.temperatureState = "Cooling"
-        this.onCooling();
+        this.setTemperatureState(-1);
+        val.onCooling();
+        console.log(this.getTemperatureState());
       }
-      if ((this.wateringState == 0 && probeTemp < data.coolTemp) || (this.wateringState == 0 && data.state == false) || (enableState == false)){
-        this.temperatureState = "Off"
-        this.offCooling();
+      if (((probeTemp < data.coolTemp)&&(data.state == true)&&(enableState == true))){
+        this.setTemperatureState(0);
+        val.offCooling();
+        console.log(this.getTemperatureState());
       }
     }
 
     /*Checks whether or not heating should be turned on or off. Looks at on/off state of the zone as well.
     Looks at if the control is enabled, if temperature meets cutoff, and if cooling is turned on.*/
-    Sprinkler.prototype.temperatureHeatTask = function(probeTemp){
-      var data = this.getHeatTemperature();
-      var enableState = this.getTemperatureEnableState();
+    Sprinkler.prototype.temperatureHeatTask = function(probeTemp, val){
+      var data = val.getHeatTemperature();
+      var enableState = val.getTemperatureEnableState();
       if (data.state == true && enableState == true && parseInt(probeTemp) <= parseInt(data.heatTemp)){
-        this.temperatureState = "Heating"
-        this.onHeating();
+        val.setTemperatureState(1);
+        val.onHeating();
       }
-      if ((probeTemp > data.heatTemp) || (data.state == false) || (enableState == false)) {
-        this.temperatureState = "Off"
-        this.offHeating();
+      if (((probeTemp > data.heatTemp)&&(enableState == true)&&(data.state == true))) {
+        val.setTemperatureState(0);
+        val.offHeating();
       }
     }
 

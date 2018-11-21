@@ -17,11 +17,12 @@ block content
               else
                 p.overview Watering: On
             if toggles.sprinkler1temperature == true
-              if sprinkler1.temperatureState == "Off"
+              //- p #{sprinkler1.temperatureState}
+              if sprinkler1.temperatureState == 0
                 p Temperature Control: Off
-              else if sprinkler1.temperatureState == "Cooling"
+              else if sprinkler1.temperatureState == -1
                 p.overview Temperature Control: Cooling
-              else if sprinkler1.temperatureState == "Heating"
+              else if sprinkler1.temperatureState == 1
                 p.overview Temperature Control: Heating
           
         div.col-sm-6
@@ -34,11 +35,11 @@ block content
               else
                 p.overview Watering: On
             if toggles.sprinkler2temperature == true    
-              if sprinkler2.temperatureState == "Off"
+              if sprinkler2.temperatureState == 0
                 p Temperature Control: Off
-              else if sprinkler2.temperatureState == "Cooling"
+              else if sprinkler2.temperatureState == -1
                 p.overview Temperature Control: Cooling
-              else if sprinkler2.temperatureState == "Heating"
+              else if sprinkler2.temperatureState == 1
                 p.overview Temperature Control: Heating
     br
     div(style="margin: auto; text-align: left").row
@@ -52,11 +53,11 @@ block content
               else
                 p.overview Watering: On
             if toggles.sprinkler3temperature == true
-              if sprinkler3.temperatureState == "Off"
+              if sprinkler3.temperatureState == 0
                 p Temperature Control: Off
-              else if sprinkler3.temperatureState == "Cooling"
+              else if sprinkler3.temperatureState == -1
                 p.overview Temperature Control: Cooling
-              else if sprinkler3.temperatureState == "Heating"
+              else if sprinkler3.temperatureState == 1
                 p.overview Temperature Control: Heating
           
         div.col-sm-6
@@ -69,9 +70,9 @@ block content
               else
                 p.overview Watering: On
             if toggles.sprinkler4temperature == true
-              if sprinkler4.temperatureState == "Off"
+              if sprinkler4.temperatureState == 0
                 p Temperature Control: Off
-              else if sprinkler4.temperatureState == "Cooling"
+              else if sprinkler4.temperatureState == -1
                 p.overview Temperature Control: Cooling
-              else if sprinkler4.temperatureState == "Heating"
+              else if sprinkler4.temperatureState == 1
                 p.overview Temperature Control: Heating
