@@ -15,6 +15,7 @@ var defaultContent = {
     heaterPin: 10,
     thermometerPin: 11,
     fertilizePin: 12,
+    lightsPin:13,
     //WEBSITE DATA
     content: {
       sidebarTitle: "Tlaloc",

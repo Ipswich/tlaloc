@@ -18,6 +18,7 @@ var settings = require('./custom_modules/settings');
 //Routers
 var indexRouter = require('./routes/index');
 var aboutRouter = require('./routes/about');
+var lightsRouter = require('./routes/lightsToggle');
 //Sprinkler1
 var sprinkler1Router = require('./routes/sprinkler1');
 var temperature1Router = require('./routes/temperature1');
@@ -53,6 +54,7 @@ app.set('arduino', arduino);
 var heaterRelay;
 var coolerRelay;
 var fertilizeRelay;
+var lightsRelay;
 var thermometer;
 
 //Promise for app initilization
@@ -79,6 +81,8 @@ new Promise((resolve, reject) => {
     fertilizeRelay = new five.Relay(data.fertilizePin);
     heaterRelay = new five.Relay(data.heaterPin);
     coolerRelay = new five.Relay(data.coolerPin);
+    lightsRelay = new five.Relay(data.lightsPin);
+    lightsRelay.off();
     thermometer = new five.Thermometer({
       controller: "DS18B20",
       pin: data.thermometerPin
@@ -87,6 +91,7 @@ new Promise((resolve, reject) => {
     console.log('Fertilizer uses Arduino pin: ' + data.fertilizePin);
     console.log('Heater uses Arduino pin: ' + data.heaterPin);
     console.log('Cooler uses Arduino pin: ' + data.coolerPin);
+    console.log('Lights use Arduino pin: ' + data.lightsPin);
     app.set('thermometer', thermometer);
     this.on("exit", function(){
         //Exit cleanup
@@ -138,6 +143,7 @@ new Promise((resolve, reject) => {
   arduino.on("ready", function(){
     app.set('fertilizePin', fertilizePin);
     app.set('heaterPin', heaterPin);
+    app.set('lightsRelay', lightsRelay);
     app.set('sprinkler1', sprinkler1);
     app.set('sprinkler2', sprinkler2);
     app.set('sprinkler3', sprinkler3);
@@ -162,6 +168,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/index', indexRouter);
 app.use('/about', aboutRouter);
+app.use('/lightsToggle', lightsRouter);
 //Sprinkler1
 app.use('/sprinkler1', sprinkler1Router);
 app.use('/temperature1', temperature1Router);

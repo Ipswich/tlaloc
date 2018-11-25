@@ -6,6 +6,14 @@ block content
       div.col-sm(style="text-align: center")
         h1 Overview
         hr
+    div.row
+      div.col-sm(style="text-align:center")
+        form(action="/lightsToggle")
+          if (lights.isOn == true)
+            input.sprinklerbutton.btn(type="submit" value="Lights Off" style="text-align:center; margin-left:auto; margin-right:auto")
+          else
+            input.sprinklerbutton.btn(type="submit" value="Lights On" style="text-align:center; margin-left:auto; margin-right:auto")
+        hr
     div(style="margin: auto; text-align: left").row
         div.col-sm-6
           if toggles.sprinkler1temperature == true || toggles.sprinkler1watering == true

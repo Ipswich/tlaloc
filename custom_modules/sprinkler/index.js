@@ -213,7 +213,6 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
       this.coolerRelay.on();
       this.setTemperatureState(-1);
       console.log(this.name + ": Cooling ON");
-      console.log(this.coolerRelay.isOn);
     }
 
     //Function for turning off cooling by sprinklers (Should not override watering)
@@ -221,7 +220,6 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
       this.coolerRelay.off();
       this.setTemperatureState(0);
       console.log(this.name + ": Cooling OFF");
-      console.log(this.coolerRelay.isOn);
     }
 
     //Function for turning on heater
@@ -229,14 +227,12 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
       this.heaterRelay.on();
       this.setTemperatureState(1);
       // console.log(this.name + ": Heating ON");
-      // console.log(this.heaterRelay.isOn);
     }
 
     //Function for turning off heater
     Sprinkler.prototype.offHeating = function(){
       this.heaterRelay.off();
       // console.log(this.name + ": Heating OFF");
-      // console.log(this.heaterRelay.isOn);
     }
 
 
@@ -259,18 +255,13 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
       Sprinkler.prototype.temperatureCoolTask = function(probeTemp, val){
       var data = this.getCoolTemperature();
       var enableState = this.getTemperatureEnableState();
-      console.log(this.name);
-      console.log(data);
-      console.log(enableState);
       if (data.state == true && enableState == true && parseInt(probeTemp) >= parseInt(data.coolTemp)){
         this.setTemperatureState(-1);
         val.onCooling();
-        console.log(this.getTemperatureState());
       }
       if (((probeTemp < data.coolTemp)&&(data.state == true)&&(enableState == true))){
         this.setTemperatureState(0);
         val.offCooling();
-        console.log(this.getTemperatureState());
       }
     }
 

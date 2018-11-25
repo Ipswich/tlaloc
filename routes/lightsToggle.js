@@ -16,11 +16,13 @@ router.get('/', function(req, res, next) {
       var sprinkler4 = req.app.get("sprinkler4");
       var thermometer = req.app.get("thermometer");
       var lights = req.app.get("lightsRelay");
-      console.log(lights);
       if (content.degreeType == 'F')
         temperature = thermometer.F + " F";
       else
         temperature = thermometer.C + " C";
+      console.log(lights.isOn)
+      console.log("LIGHTS TOGGLED");
+      lights.toggle();
       content.lights = lights;
       content.sprinkler1 = {};
       content.sprinkler2 = {};
