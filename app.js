@@ -86,14 +86,32 @@ new Promise((resolve, reject) => {
     thermometer1 = new five.Thermometer({
       controller: "DS18B20",
       pin: data.thermometerPin,
-      // address: data.thermometer1
+      address: data.thermometer1
     });
-    console.log('Thermometer uses Arduino pin: ' + data.thermometerPin);
+    thermometer2 = new five.Thermometer({
+      controller: "DS18B20",
+      pin: data.thermometerPin,
+      address: data.thermometer2
+    });
+    thermometer3 = new five.Thermometer({
+      controller: "DS18B20",
+      pin: data.thermometerPin,
+      address: data.thermometer3
+    });
+    thermometer4 = new five.Thermometer({
+      controller: "DS18B20",
+      pin: data.thermometerPin,
+      address: data.thermometer4
+    });
+    console.log('Thermometers use Arduino pin: ' + data.thermometerPin);
     console.log('Fertilizer uses Arduino pin: ' + data.fertilizePin);
     console.log('Heater uses Arduino pin: ' + data.heaterPin);
     console.log('Cooler uses Arduino pin: ' + data.coolerPin);
     console.log('Lights use Arduino pin: ' + data.lightsPin);
-    app.set('thermometer', thermometer1);
+    app.set('thermometer1', thermometer1);
+    app.set('thermometer2', thermometer2);
+    app.set('thermometer3', thermometer3);
+    app.set('thermometer4', thermometer4);
     this.on("exit", function(){
         //Exit cleanup
     });
@@ -103,9 +121,9 @@ new Promise((resolve, reject) => {
 .then(() => {
   arduino.on("ready", function(){
     sprinkler1 = new Sprinkler('sprinkler1', data.sprinkler1Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer1);
-    sprinkler2 = new Sprinkler('sprinkler2', data.sprinkler2Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer1);
-    sprinkler3 = new Sprinkler('sprinkler3', data.sprinkler3Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer1);
-    sprinkler4 = new Sprinkler('sprinkler4', data.sprinkler4Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer1);
+    sprinkler2 = new Sprinkler('sprinkler2', data.sprinkler2Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer2);
+    sprinkler3 = new Sprinkler('sprinkler3', data.sprinkler3Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer3);
+    sprinkler4 = new Sprinkler('sprinkler4', data.sprinkler4Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer4);
     sprinkler1.commitAllTimers();
     sprinkler2.commitAllTimers();
     sprinkler3.commitAllTimers();
@@ -116,7 +134,6 @@ new Promise((resolve, reject) => {
   //Initialize Check for Heat/cool tasks
   arduino.on("ready", function(){
     thermometer1.on("change", function(){
-    console.log("0x" + thermometer1.address.toString(16));
       if(data.degreeType == "C"){
         sprinkler1.temperatureHeatTask(this.C, sprinkler1);
         sprinkler2.temperatureHeatTask(this.C, sprinkler2);
