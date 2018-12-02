@@ -16,13 +16,12 @@ router.get('/', function(req, res, next) {
       var sprinkler4 = req.app.get("sprinkler4");
       var thermometer = req.app.get("thermometer");
       var lights = req.app.get("lightsRelay");
-      console.log(lights);
       if (content.degreeType == 'F')
         temperature = thermometer.F + " F";
       else
         temperature = thermometer.C + " C";
       content.lights = lights;
-      content.sprinkler1 = {};
+      content.sprinkler1 = sprinkler1;
       content.sprinkler2 = {};
       content.sprinkler3 = {};
       content.sprinkler4 = {};
@@ -42,16 +41,37 @@ router.get('/', function(req, res, next) {
       sprinkler3.heaterRelay.isOn ? sprinkler3.setTemperatureState(1) : sprinkler3.setTemperatureState(0);
       sprinkler4.heaterRelay.isOn ? sprinkler4.setTemperatureState(1) : sprinkler4.setTemperatureState(0);
 
-      sprinkler1.coolerRelay.isOn ? sprinkler1.setTemperatureState(-1) : sprinkler1.setTemperatureState(0);
-      sprinkler2.coolerRelay.isOn ? sprinkler2.setTemperatureState(-1) : sprinkler2.setTemperatureState(0);
-      sprinkler3.coolerRelay.isOn ? sprinkler3.setTemperatureState(-1) : sprinkler3.setTemperatureState(0);
-      sprinkler4.coolerRelay.isOn ? sprinkler4.setTemperatureState(-1) : sprinkler4.setTemperatureState(0);
+      if(sprinkler1.heaterRelay.isOn != true)
+        sprinkler1.coolerRelay.isOn ? sprinkler1.setTemperatureState(-1) : sprinkler1.setTemperatureState(0);
+      if(sprinkler2.heaterRelay.isOn != true)
+        sprinkler2.coolerRelay.isOn ? sprinkler2.setTemperatureState(-1) : sprinkler2.setTemperatureState(0);
+      if(sprinkler3.heaterRelay.isOn != true)
+        sprinkler3.coolerRelay.isOn ? sprinkler3.setTemperatureState(-1) : sprinkler3.setTemperatureState(0);
+      if(sprinkler4.heaterRelay.isOn != true)
+        sprinkler4.coolerRelay.isOn ? sprinkler4.setTemperatureState(-1) : sprinkler4.setTemperatureState(0);
 
       content.sprinkler1.temperatureState = sprinkler1.getTemperatureState();
       content.sprinkler2.temperatureState = sprinkler2.getTemperatureState();
       content.sprinkler3.temperatureState = sprinkler3.getTemperatureState();
       content.sprinkler4.temperatureState = sprinkler4.getTemperatureState();
 
+      content.sprinkler1.temperatureData = sprinkler1.getLoggedTemperatureObject();
+      content.sprinkler1.highTemperature = sprinkler1.getLoggedHighTemperature();
+      content.sprinkler1.lowTemperature = sprinkler1.getLoggedLowTemperature();
+
+      content.sprinkler2.temperatureData = sprinkler2.getLoggedTemperatureObject();
+      content.sprinkler2.highTemperature = sprinkler2.getLoggedHighTemperature();
+      content.sprinkler2.lowTemperature = sprinkler2.getLoggedLowTemperature();
+
+      content.sprinkler3.temperatureData = sprinkler3.getLoggedTemperatureObject();
+      content.sprinkler3.highTemperature = sprinkler3.getLoggedHighTemperature();
+      content.sprinkler3.lowTemperature = sprinkler3.getLoggedLowTemperature();
+
+      content.sprinkler4.temperatureData = sprinkler4.getLoggedTemperatureObject();
+      content.sprinkler4.highTemperature = sprinkler4.getLoggedHighTemperature();
+      content.sprinkler4.lowTemperature = sprinkler4.getLoggedLowTemperature();
+
+      console.log(sprinkler1.getLoggedTemperatureObject()[0]);
       res.render('./index', content);
     }
   });

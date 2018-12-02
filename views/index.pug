@@ -1,5 +1,5 @@
 extends layout.pug
-
+include ./temperatureTable.pug
 block content
   div.container
     div.row
@@ -19,6 +19,23 @@ block content
           if toggles.sprinkler1temperature == true || toggles.sprinkler1watering == true
             h4.col-sm #[u #{content.link2}]
             p Current Temperature: #{sprinkler1.currentTemperature}
+            //- BEGIN NEW TESTING AREA
+            p 12 Hour Recorded High: #{sprinkler1.highTemperature.temp} #{sprinkler1.highTemperature.degree} @ #{sprinkler1.highTemperature.time}
+            p 12 Hour Recorded Low: #{sprinkler1.lowTemperature.temp} #{sprinkler1.highTemperature.degree} @ #{sprinkler1.lowTemperature.time}
+            p 
+              button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#sprinkler1HistoricalTemperatureData" role="button" area-expanded="false" aria-controls="sprinklerHistoricalTemperatureData") Historical Temperatures
+            div#sprinkler1HistoricalTemperatureData.collapse
+              div#tempTable.card.card-body.sprinklerInformation
+                table(style="margin-left:auto; margin-right:auto;")
+                  tr
+                    th(style="text-align: center") Temperature
+                    th(style="text-align: center") Time
+                    each val in sprinkler1.temperatureData
+                      tr
+                        td(style="text-align: center") #{val.temp} #{val.degree}
+                        td(style="text-align: center") #{val.time}
+              br
+            //- END NEW TESTING AREA
             if toggles.sprinkler1watering == true
               if sprinkler1.wateringState == 0
                 p Watering: Off
@@ -37,6 +54,21 @@ block content
           if toggles.sprinkler2temperature == true || toggles.sprinkler2watering == true
             h4.col-sm #[u #{content.link3}]
             p Current Temperature: #{sprinkler2.currentTemperature}
+            p 12 Hour Recorded High: #{sprinkler2.highTemperature.temp} #{sprinkler2.highTemperature.degree} @ #{sprinkler2.highTemperature.time}
+            p 12 Hour Recorded Low: #{sprinkler2.lowTemperature.temp} #{sprinkler2.highTemperature.degree} @ #{sprinkler2.lowTemperature.time}
+            p 
+              button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#sprinkler2HistoricalTemperatureData" role="button" area-expanded="false" aria-controls="sprinklerHistoricalTemperatureData") Historical Temperatures
+            div#sprinkler2HistoricalTemperatureData.collapse
+              div#tempTable.card.card-body.sprinklerInformation
+                table(style="margin-left:auto; margin-right:auto;")
+                  tr
+                    th(style="text-align: center") Temperature
+                    th(style="text-align: center") Time
+                    each val in sprinkler2.temperatureData
+                      tr
+                        td(style="text-align: center") #{val.temp} #{val.degree}
+                        td(style="text-align: center") #{val.time}
+              br
             if toggles.sprinkler2watering == true
               if sprinkler2.wateringState == 0
                 p Watering: Off
@@ -55,6 +87,21 @@ block content
           if toggles.sprinkler3temperature == true || toggles.sprinkler3watering == true
             h4.col-sm #[u #{content.link4}]
             p Current Temperature: #{sprinkler3.currentTemperature}
+            p 12 Hour Recorded High: #{sprinkler3.highTemperature.temp} #{sprinkler3.highTemperature.degree} @ #{sprinkler3.highTemperature.time}
+            p 12 Hour Recorded Low: #{sprinkler3.lowTemperature.temp} #{sprinkler3.highTemperature.degree} @ #{sprinkler3.lowTemperature.time}
+            p 
+              button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#sprinkler3HistoricalTemperatureData" role="button" area-expanded="false" aria-controls="sprinklerHistoricalTemperatureData") Historical Temperatures
+            div#sprinkler3HistoricalTemperatureData.collapse
+              div#tempTable.card.card-body.sprinklerInformation
+                table(style="margin-left:auto; margin-right:auto;")
+                  tr
+                    th(style="text-align: center") Temperature
+                    th(style="text-align: center") Time
+                    each val in sprinkler3.temperatureData
+                      tr
+                        td(style="text-align: center") #{val.temp} #{val.degree}
+                        td(style="text-align: center") #{val.time}
+              br
             if toggles.sprinkler3watering == true
               if sprinkler3.wateringState == 0
                 p Watering: Off
@@ -72,6 +119,21 @@ block content
           if toggles.sprinkler4temperature == true || toggles.sprinkler4watering == true
             h4.col-sm #[u #{content.link5}]
             p Current Temperature: #{sprinkler4.currentTemperature}
+            p 12 Hour Recorded High: #{sprinkler4.highTemperature.temp} #{sprinkler4.highTemperature.degree} @ #{sprinkler4.highTemperature.time}
+            p 12 Hour Recorded Low: #{sprinkler4.lowTemperature.temp} #{sprinkler4.highTemperature.degree} @ #{sprinkler4.lowTemperature.time}
+            p 
+              button.sprinklerbutton.btn(style="text-align:center; margin-left:auto; margin-right:auto" data-toggle="collapse" data-target="#sprinkler4HistoricalTemperatureData" role="button" area-expanded="false" aria-controls="sprinklerHistoricalTemperatureData") Historical Temperatures
+            div#sprinkler4HistoricalTemperatureData.collapse
+              div#tempTable.card.card-body.sprinklerInformation
+                table(style="margin-left:auto; margin-right:auto;")
+                  tr
+                    th(style="text-align: center") Temperature
+                    th(style="text-align: center") Time
+                    each val in sprinkler4.temperatureData
+                      tr
+                        td(style="text-align: center") #{val.temp} #{val.degree}
+                        td(style="text-align: center") #{val.time}
+              br
             if toggles.sprinkler4watering == true
               if sprinkler4.wateringState == 0
                 p Watering: Off

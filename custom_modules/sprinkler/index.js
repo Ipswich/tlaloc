@@ -26,6 +26,7 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
   this.temperatureState = 0;
   this.thermometer = thermometer;
   this.sprinklerRelay = new five.Relay(sprinklerRelay);
+  this.temperatureHistory = [];
 
   console.log(this.name + ' uses Arduino pin: ' +  sprinklerRelay);
 }
@@ -39,7 +40,7 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
         return db.get(this.name).value();
       }
       else {
-        console.log("NO SCHEDULE")
+        console.log("NO SCHEDULE");
       }
     }
 
@@ -226,13 +227,14 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
     Sprinkler.prototype.onHeating = function(){
       this.heaterRelay.on();
       this.setTemperatureState(1);
-      // console.log(this.name + ": Heating ON");
+
+      console.log(this.name + ": Heating ON:  " + this.heaterRelay.isOn);
     }
 
     //Function for turning off heater
     Sprinkler.prototype.offHeating = function(){
       this.heaterRelay.off();
-      // console.log(this.name + ": Heating OFF");
+      console.log(this.name + ": Heating OFF:  " + this.heaterRelay.isOn);
     }
 
 
@@ -249,10 +251,58 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
       }
     }
 
+    //Log temperature to Sprinkler object - push newest time/temp and remove time/temps
+    //beyond 24 (12hs with 30m granularity).
+    Sprinkler.prototype.logTemperature = function(){
+      if (settings.degreeType = 'F'){
+        this.temperatureHistory.push({
+          time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}),
+          temp: this.thermometer.F,
+          degree: settings.degreeType
+        })
+      }
+      else {
+        this.temperatureHistory.push({
+          time: new Date(),
+          temp: this.thermometer.C,
+          degree: settings.degreeType
+        })
+      }
+      if(this.temperatureHistory.length >= 24){
+        this.temperatureHistory.shift();
+      }
+    }
 
-      /*Checks whether or not cooling should be turned on or off.
-      Looks at if the control is enabled, if temperature meets cutoff, and if cooling is turned on.*/
-      Sprinkler.prototype.temperatureCoolTask = function(probeTemp, val){
+    Sprinkler.prototype.getLoggedTemperatureObject = function(){
+      return this.temperatureHistory;
+    }
+
+    //Returns high temperature of logged data
+    Sprinkler.prototype.getLoggedHighTemperature = function(){
+      var high = {temp: 0};
+      this.temperatureHistory.forEach(function(element){
+        if (element.temp > high.temp)
+        {
+          high = element;
+        }
+      });
+      return high;
+    }
+
+    //Returns low temperature of logged data
+    Sprinkler.prototype.getLoggedLowTemperature = function(){
+      var low = {temp: 999};
+      this.temperatureHistory.forEach(function(element){
+        if(element.temp < low.temp){
+          low = element;
+        }
+      });
+      return low;
+    }
+
+    /*Checks whether or not cooling should be turned on or off.
+    Looks at if the control is enabled, if temperature meets cutoff, and if cooling is turned on.*/
+    Sprinkler.prototype.temperatureCoolTask = function(probeTemp, val){
       var data = this.getCoolTemperature();
       var enableState = this.getTemperatureEnableState();
       if (data.state == true && enableState == true && parseInt(probeTemp) >= parseInt(data.coolTemp)){
