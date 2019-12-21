@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -55,7 +56,9 @@ var heaterRelay;
 var coolerRelay;
 var fertilizeRelay;
 var lightsRelay;
+var lightsButton;
 var thermometer1;
+var thermometer2;
 
 //Promise for app initilization
 new Promise((resolve, reject) => {
@@ -81,37 +84,46 @@ new Promise((resolve, reject) => {
     fertilizeRelay = new five.Relay(data.fertilizePin);
     heaterRelay = new five.Relay(data.heaterPin);
     coolerRelay = new five.Relay(data.coolerPin);
-    lightsRelay = new five.Relay(data.lightsPin);
+    lightsRelay = new five.Relay({
+      pin: data.lightsPin,
+      type: "NC"
+    });
+    // lightsButton = new five.Button({
+    //   pin: data.lightsPin,
+    //   isPullDown: true,
+    // });
     lightsRelay.off();
     thermometer1 = new five.Thermometer({
       controller: "DS18B20",
       pin: data.thermometerPin,
-      address: data.thermometer1
+      // address: data.thermometer1,
+      freq: 1000 * 60 * 5
     });
-    thermometer2 = new five.Thermometer({
-      controller: "DS18B20",
-      pin: data.thermometerPin,
-      address: data.thermometer2
-    });
-    thermometer3 = new five.Thermometer({
-      controller: "DS18B20",
-      pin: data.thermometerPin,
-      address: data.thermometer3
-    });
-    thermometer4 = new five.Thermometer({
-      controller: "DS18B20",
-      pin: data.thermometerPin,
-      address: data.thermometer4
-    });
+    // thermometer2 = new five.Thermometer({
+    //   controller: "DS18B20",
+    //   pin: data.thermometerPin,
+    //   address: data.thermometer2,
+    //   freq: 1000 * 60 * 5
+    // });
+    // thermometer3 = new five.Thermometer({
+    //   controller: "DS18B20",
+    //   pin: data.thermometerPin,
+    //   address: data.thermometer3
+    // });
+    // thermometer4 = new five.Thermometer({
+    //   controller: "DS18B20",
+    //   pin: data.thermometerPin,
+    //   address: data.thermometer4
+    // });
     console.log('Thermometers use Arduino pin: ' + data.thermometerPin);
     console.log('Fertilizer uses Arduino pin: ' + data.fertilizePin);
     console.log('Heater uses Arduino pin: ' + data.heaterPin);
     console.log('Cooler uses Arduino pin: ' + data.coolerPin);
     console.log('Lights use Arduino pin: ' + data.lightsPin);
     app.set('thermometer1', thermometer1);
-    app.set('thermometer2', thermometer2);
-    app.set('thermometer3', thermometer3);
-    app.set('thermometer4', thermometer4);
+    // app.set('thermometer2', thermometer2);
+    // app.set('thermometer3', thermometer3);
+    // app.set('thermometer4', thermometer4);
     this.on("exit", function(){
         //Exit cleanup
     });
@@ -121,9 +133,9 @@ new Promise((resolve, reject) => {
 .then(() => {
   arduino.on("ready", function(){
     sprinkler1 = new Sprinkler('sprinkler1', data.sprinkler1Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer1);
-    sprinkler2 = new Sprinkler('sprinkler2', data.sprinkler2Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer2);
-    sprinkler3 = new Sprinkler('sprinkler3', data.sprinkler3Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer3);
-    sprinkler4 = new Sprinkler('sprinkler4', data.sprinkler4Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer4);
+    sprinkler2 = new Sprinkler('sprinkler2', data.sprinkler2Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer1);
+    sprinkler3 = new Sprinkler('sprinkler3', data.sprinkler3Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer1);
+    sprinkler4 = new Sprinkler('sprinkler4', data.sprinkler4Pin, fertilizeRelay, heaterRelay, coolerRelay, arduino, thermometer1);
     sprinkler1.commitAllTimers();
     sprinkler2.commitAllTimers();
     sprinkler3.commitAllTimers();
@@ -136,28 +148,49 @@ new Promise((resolve, reject) => {
     thermometer1.on("change", function(){
       if(data.degreeType == "C"){
         sprinkler1.temperatureHeatTask(this.C, sprinkler1);
-        sprinkler2.temperatureHeatTask(this.C, sprinkler2);
         sprinkler3.temperatureHeatTask(this.C, sprinkler3);
         sprinkler4.temperatureHeatTask(this.C, sprinkler4);
         sprinkler1.temperatureCoolTask(this.C, sprinkler1);
-        sprinkler2.temperatureCoolTask(this.C, sprinkler2);
         sprinkler3.temperatureCoolTask(this.C, sprinkler3);
         sprinkler4.temperatureCoolTask(this.C, sprinkler4);
       }
+      else{
       sprinkler1.temperatureHeatTask(this.F, sprinkler1);
-      sprinkler2.temperatureHeatTask(this.F, sprinkler2);
       sprinkler3.temperatureHeatTask(this.F, sprinkler3);
       sprinkler4.temperatureHeatTask(this.F, sprinkler4);
       sprinkler1.temperatureCoolTask(this.F, sprinkler1);
-      sprinkler2.temperatureCoolTask(this.F, sprinkler2);
       sprinkler3.temperatureCoolTask(this.F, sprinkler3);
       sprinkler4.temperatureCoolTask(this.F, sprinkler4);
+      }
     });
+    // thermometer2.on("change", function(){
+    //   if(data.degreeType == "C"){
+    //     sprinkler2.temperatureHeatTask(this.C, sprinkler2)
+    //     sprinkler2.temperatureCoolTask(this.C, sprinkler2)
+    //   }
+    //   else{
+    //     sprinkler2.temperatureHeatTask(this.F, sprinkler2);
+    //     sprinkler2.temperatureCoolTask(this.F, sprinkler2);
+    //   }
+    //
+    // })
     //Initialize Temperature Logging 30 MINUTE INTERVALS
     setInterval(function(){sprinkler1.logTemperature()}, (1000 * 60 * 30));
     setInterval(function(){sprinkler2.logTemperature()}, (1000 * 60 * 30));
     setInterval(function(){sprinkler3.logTemperature()}, (1000 * 60 * 30));
     setInterval(function(){sprinkler4.logTemperature()}, (1000 * 60 * 30));
+
+    // lightsButton.on("down", function(){
+    //   console.log("Pressed!");
+    //   lightsRelay.toggle();
+    // });
+    // lightsButton.on("up", function(){
+    //   console.log("Released!");
+    //   lightsRelay.toggle();
+    // });
+    // lightsButton.on("hold", function(){
+    //   console.log("Held!");
+    // });
     return;
   });
 })
@@ -170,6 +203,8 @@ new Promise((resolve, reject) => {
     app.set('sprinkler2', sprinkler2);
     app.set('sprinkler3', sprinkler3);
     app.set('sprinkler4', sprinkler4);
+
+    console.log("Initilization and setup successfully completed!");
     return;
   })
 });
@@ -231,7 +266,6 @@ app.use(function(err, req, res, next) {
     else res.render('error', content);
   });
 });
-
 
 
 module.exports = app;

@@ -40,7 +40,7 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
         return db.get(this.name).value();
       }
       else {
-        console.log("NO SCHEDULE");
+        // console.log("NO SCHEDULE");
       }
     }
 
@@ -52,13 +52,13 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
         return db.get(string).value();
       }
       else{
-        console.log("NO TIMERS");
+        // console.log("NO TIMERS");
       }
     }
 
     //Adds a timer to the database
     Sprinkler.prototype.addTimer = function(startString, stopString, fertilize){
-      console.log("ADDING ENTRY. . .");
+      // console.log("ADDING ENTRY. . .");
       db.get(this.name).push({startTime: startString, stopTime: stopString, fertilizeState: fertilize}).write();
     }
 
@@ -66,12 +66,12 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
     Sprinkler.prototype.removeTimerByIndex = function(index){
       let string = this.name + '[' + index + ']';
       if(db.has(string).value()) {
-        console.log("REMOVING ENTRY . . .")
+        // console.log("REMOVING ENTRY . . .")
         db.set(string, {removeMe: 1}).write();
         db.get(this.name).remove({removeMe: 1}).write();
       }
       else {
-        console.log("NO TIMER TO DELETE");
+        // console.log("NO TIMER TO DELETE");
       }
     }
 
@@ -182,14 +182,14 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
     Sprinkler.prototype.onWatering = function(val){
       val.wateringState = 1;
       val.sprinklerRelay.on();
-      console.log(val.name + ": Watering ON");
+      // console.log(val.name + ": Watering ON");
     }
 
     //Function for turning off watering
     Sprinkler.prototype.offWatering = function(val){
       val.wateringState = 0;
       val.sprinklerRelay.off();
-      console.log(val.name + ": Watering OFF");
+      // console.log(val.name + ": Watering OFF");
     }
 
     //Function for turning on fertilizer
@@ -198,7 +198,7 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
       val.sprinklerRelay.on();
       val.fertilizeState = 1;
       val.fertilizeRelay.on();
-      console.log(val.name + ": Fertilize ON");
+      // console.log(val.name + ": Fertilize ON");
     }
 
       //Function for turning off fertilizer
@@ -206,21 +206,21 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
       val.sprinklerRelay.off();
       val.fertilizeState = 0;
       val.fertilizeRelay.off();
-      console.log(val.name + ": Fertilize OFF");
+      // console.log(val.name + ": Fertilize OFF");
     }
 
     //Function for turning on cooling by sprinklers (Should not override watering)
     Sprinkler.prototype.onCooling = function(){
       this.coolerRelay.on();
-      this.setTemperatureState(-1);
-      console.log(this.name + ": Cooling ON");
+      // this.setTemperatureState(-1);
+      // console.log(this.name + ": Cooling ON");
     }
 
     //Function for turning off cooling by sprinklers (Should not override watering)
     Sprinkler.prototype.offCooling = function(){
       this.coolerRelay.off();
       this.setTemperatureState(0);
-      console.log(this.name + ": Cooling OFF");
+      // console.log(this.name + ": Cooling OFF");
     }
 
     //Function for turning on heater
@@ -228,13 +228,13 @@ function Sprinkler(name, sprinklerRelay, fertilizeRelay, heaterRelay, coolerRela
       this.heaterRelay.on();
       this.setTemperatureState(1);
 
-      console.log(this.name + ": Heating ON:  " + this.heaterRelay.isOn);
+      // console.log(this.name + ": Heating ON:  " + this.heaterRelay.isOn);
     }
 
     //Function for turning off heater
     Sprinkler.prototype.offHeating = function(){
       this.heaterRelay.off();
-      console.log(this.name + ": Heating OFF:  " + this.heaterRelay.isOn);
+      // console.log(this.name + ": Heating OFF:  " + this.heaterRelay.isOn);
     }
 
 

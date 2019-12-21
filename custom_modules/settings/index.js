@@ -10,12 +10,13 @@ var defaultContent = {
     sprinkler1Pin: 2,
     sprinkler2Pin: 3,
     sprinkler3Pin: 4,
-    sprinkler4Pin: 5,
-    fertilizePin: 6,
+    sprinkler4Pin: 9,
+    fertilizePin: 6, //BUSTED
     coolerPin: 7,
     heaterPin: 8,
-    lightsPin: 9,
+    lightsPin: 5,  //BUSTED
     thermometerPin: 10,
+    lightsButtonPin: 11,
     thermometer1: 0x417c1f1deff,
     thermometer2: 0x417c1feafff,
     thermometer3: 0x417c1fd33ff,

@@ -1,0 +1,13 @@
+[Unit]
+Description=tlaloc sprinkler service
+
+[Service]
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+RestartSec=10
+KillMode=process
+User=pi
+WorkingDirectory=/home/pi/tlaloc
+
+[Install]
+WantedBy=multi-user.target

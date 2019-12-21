@@ -1,5 +1,4 @@
 extends layout.pug
-include ./temperatureTable.pug
 block content
   div.container
     div.row
@@ -10,16 +9,15 @@ block content
       div.col-sm(style="text-align:center")
         form(action="/lightsToggle")
           if (lights.isOn == true)
-            input.sprinklerbutton.btn(type="submit" value="Lights Off" style="text-align:center; margin-left:auto; margin-right:auto")
+            input.sprinklerbutton.btn(type="submit" value="Turn Lights Off" style="text-align:center; margin-left:auto; margin-right:auto")
           else
-            input.sprinklerbutton.btn(type="submit" value="Lights On" style="text-align:center; margin-left:auto; margin-right:auto")
+            input.sprinklerbutton.btn(type="submit" value="Turn Lights On" style="text-align:center; margin-left:auto; margin-right:auto")
         hr
     div(style="margin: auto; text-align: left").row
         div.col-sm-6
           if toggles.sprinkler1temperature == true || toggles.sprinkler1watering == true
             h4.col-sm #[u #{content.link2}]
             p Current Temperature: #{sprinkler1.currentTemperature}
-            //- BEGIN NEW TESTING AREA
             p 12 Hour Recorded High: #{sprinkler1.highTemperature.temp} #{sprinkler1.highTemperature.degree} @ #{sprinkler1.highTemperature.time}
             p 12 Hour Recorded Low: #{sprinkler1.lowTemperature.temp} #{sprinkler1.highTemperature.degree} @ #{sprinkler1.lowTemperature.time}
             p 
@@ -35,7 +33,6 @@ block content
                         td(style="text-align: center") #{val.temp} #{val.degree}
                         td(style="text-align: center") #{val.time}
               br
-            //- END NEW TESTING AREA
             if toggles.sprinkler1watering == true
               if sprinkler1.wateringState == 0
                 p Watering: Off

@@ -14,49 +14,46 @@ router.get('/', function(req, res, next) {
       var sprinkler2 = req.app.get("sprinkler2");
       var sprinkler3 = req.app.get("sprinkler3");
       var sprinkler4 = req.app.get("sprinkler4");
-      var thermometer = req.app.get("thermometer");
+      var thermometer1 = req.app.get("thermometer1");
+      var thermometer2 = req.app.get("thermometer2");
       var lights = req.app.get("lightsRelay");
-      if (content.degreeType == 'F')
-        temperature = thermometer.F + " F";
-      else
-        temperature = thermometer.C + " C";
-      content.lights = lights;
+      if (content.degreeType == 'F'){
+        temperature1 = thermometer1.F + " F";
+        temperature2 = thermometer2.F + " F";
+        // temperature3 = thermometer3.F + " F";
+        // temperature4 = thermometer4.F + " F";
+      }
+      else {
+        temperature1 = thermometer1.C + " C";
+        temperature2 = thermometer2.C + " C";
+        // temperature3 = thermometer3.C + " C";
+        // temperature = thermometer4.C + " C";
+      }
+      content.lightsOn = lights.isOn;
+      //Sprinkler1 Content
       content.sprinkler1 = {};
-      content.sprinkler2 = {};
-      content.sprinkler3 = {};
-      content.sprinkler4 = {};
+      content.sprinkler1.name = sprinkler1.name;
+      content.sprinkler1.timerObjects = sprinkler1.timerObjects;
+      content.sprinkler1.wateringState = sprinkler1.wateringState;
+      content.sprinkler1.fertilizeState = sprinkler1.fertilizeState;
+      content.sprinkler1.temperatureState = sprinkler1.temperatureState;
+      content.sprinkler1.currentTemperature = temperature1;
+      content.sprinkler1.temperatureHistory = sprinkler1.getLoggedTemperatureObject();
+      content.sprinkler1.highTemperature = sprinkler1.getLoggedHighTemperature();
+      content.sprinkler1.lowTemperature = sprinkler1.getLoggedLowTemperature();
+     //Sprinkler 2 Content
+     content.sprinkler2 = {};
+     content.sprinkler2.name = sprinkler2.name;
+     content.sprinkler2.timerObjects = sprinkler2.timerObjects;
+     content.sprinkler2.wateringState = sprinkler2.wateringState;
+     content.sprinkler2.fertilizeState = sprinkler2.fertilizeState;
+     content.sprinkler2.temperatureState = sprinkler2.temperatureState;
+     content.sprinkler2.currentTemperature = temperature2;
+     content.sprinkler2.temperatureHistory = sprinkler2.getLoggedTemperatureObject();
+     content.sprinkler2.highTemperature = sprinkler2.getLoggedHighTemperature();
+     content.sprinkler2.lowTemperature = sprinkler2.getLoggedLowTemperature();
 
-      content.sprinkler1.currentTemperature = temperature;
-      content.sprinkler2.currentTemperature = temperature;
-      content.sprinkler3.currentTemperature = temperature;
-      content.sprinkler4.currentTemperature = temperature;
-
-      content.sprinkler1.wateringState = sprinkler1.getWateringState();
-      content.sprinkler2.wateringState = sprinkler2.getWateringState();
-      content.sprinkler3.wateringState = sprinkler3.getWateringState();
-      content.sprinkler4.wateringState = sprinkler4.getWateringState();
-
-      sprinkler1.heaterRelay.isOn ? sprinkler1.setTemperatureState(1) : sprinkler1.setTemperatureState(0);
-      sprinkler2.heaterRelay.isOn ? sprinkler2.setTemperatureState(1) : sprinkler2.setTemperatureState(0);
-      sprinkler3.heaterRelay.isOn ? sprinkler3.setTemperatureState(1) : sprinkler3.setTemperatureState(0);
-      sprinkler4.heaterRelay.isOn ? sprinkler4.setTemperatureState(1) : sprinkler4.setTemperatureState(0);
-
-      if(sprinkler1.heaterRelay.isOn != true)
-        sprinkler1.coolerRelay.isOn ? sprinkler1.setTemperatureState(-1) : sprinkler1.setTemperatureState(0);
-      if(sprinkler2.heaterRelay.isOn != true)
-        sprinkler2.coolerRelay.isOn ? sprinkler2.setTemperatureState(-1) : sprinkler2.setTemperatureState(0);
-      if(sprinkler3.heaterRelay.isOn != true)
-        sprinkler3.coolerRelay.isOn ? sprinkler3.setTemperatureState(-1) : sprinkler3.setTemperatureState(0);
-      if(sprinkler4.heaterRelay.isOn != true)
-        sprinkler4.coolerRelay.isOn ? sprinkler4.setTemperatureState(-1) : sprinkler4.setTemperatureState(0);
-
-      content.sprinkler1.temperatureState = sprinkler1.getTemperatureState();
-      content.sprinkler2.temperatureState = sprinkler2.getTemperatureState();
-      content.sprinkler3.temperatureState = sprinkler3.getTemperatureState();
-      content.sprinkler4.temperatureState = sprinkler4.getTemperatureState();
-
-      content.sprinkler1.temperatureData = sprinkler1.getLoggedTemperatureObject();
-
+      // console.log(content);
       res.json(content);
     }
   });

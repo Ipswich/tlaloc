@@ -14,22 +14,31 @@ router.get('/', function(req, res, next) {
       var sprinkler2 = req.app.get("sprinkler2");
       var sprinkler3 = req.app.get("sprinkler3");
       var sprinkler4 = req.app.get("sprinkler4");
-      var thermometer = req.app.get("thermometer");
+      var thermometer1 = req.app.get("thermometer1");
+      var thermometer2 = req.app.get("thermometer2");
       var lights = req.app.get("lightsRelay");
-      if (content.degreeType == 'F')
-        temperature = thermometer.F + " F";
-      else
-        temperature = thermometer.C + " C";
+      if (content.degreeType == 'F'){
+        temperature1 = thermometer1.F + " F";
+        // temperature2 = thermometer2.F + " F";
+        // temperature = thermometer3.F + " F";
+        // temperature = thermometer4.F + " F";
+      }
+      else{
+        temperature1 = thermometer1.C + " C";
+        // temperature2 = thermometer2.C + " C";
+        // temperature = thermometer3.C + " C";
+        // temperature = thermometer4.C + " C";
+      }
       content.lights = lights;
       content.sprinkler1 = sprinkler1;
-      content.sprinkler2 = {};
-      content.sprinkler3 = {};
-      content.sprinkler4 = {};
+      content.sprinkler2 = sprinkler2;
+      content.sprinkler3 = sprinkler3;
+      content.sprinkler4 = sprinkler4;
 
-      content.sprinkler1.currentTemperature = temperature;
-      content.sprinkler2.currentTemperature = temperature;
-      content.sprinkler3.currentTemperature = temperature;
-      content.sprinkler4.currentTemperature = temperature;
+      content.sprinkler1.currentTemperature = temperature1;
+      // content.sprinkler2.currentTemperature = temperature2;
+      // content.sprinkler3.currentTemperature = temperature1;
+      // content.sprinkler4.currentTemperature = temperature1;
 
       content.sprinkler1.wateringState = sprinkler1.getWateringState();
       content.sprinkler2.wateringState = sprinkler2.getWateringState();
@@ -71,7 +80,10 @@ router.get('/', function(req, res, next) {
       content.sprinkler4.highTemperature = sprinkler4.getLoggedHighTemperature();
       content.sprinkler4.lowTemperature = sprinkler4.getLoggedLowTemperature();
 
-      console.log(sprinkler1.getLoggedTemperatureObject()[0]);
+
+      // console.log(content.sprinkler1.temperatureData)
+
+
       res.render('./index', content);
     }
   });
